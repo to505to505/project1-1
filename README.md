@@ -2,6 +2,8 @@
 
 Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
 
+!When running the code in VSCode, make sure to modify the launch.json to contain your filepath to the lib folder.
+
 ## Folder Structure
 
 The workspace contains two folders by default, where:

@@ -1,38 +1,9 @@
 {
-    // Используйте IntelliSense, чтобы узнать о возможных атрибутах.
-    // Наведите указатель мыши, чтобы просмотреть описания существующих атрибутов.
-    // Для получения дополнительной информации посетите: https://go.microsoft.com/fwlink/?linkid=830387
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "Main",
-            "projectName": "plots_c35622c9"
-        },
-        {
-            "type": "java",
-            "name": "deleteEmptyrows",
-            "request": "launch",
-            "mainClass": "deleteEmptyrows",
-            "projectName": "fx_try3_1fcd1aa6"
-        },
-        {
-            "type": "java",
-            "name": "MainFunc",
-            "request": "launch",
-            "mainClass": "MainFunc",
-            "projectName": "fx_try3_1fcd1aa6"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "Main",
-            "projectName": "fx_try3_1fcd1aa6",
-            "vmArgs": "--module-path C:/dev/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
-        },
         {
             "type": "java",
             "name": "Current File",
@@ -41,11 +12,53 @@
         },
         {
             "type": "java",
+            "name": "Data",
+            "request": "launch",
+            "mainClass": "Data",
+            "projectName": "plots_c35622c9"
+        },
+        {
+            "type": "java",
+            "name": "HistogramChart",
+            "request": "launch",
+            "mainClass": "HistogramChart",
+            "projectName": "plots_c35622c9"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "Main",
-            "projectName": "fx_try3_bace5f36",
-            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.controls,javafx.fxml"
+            "projectName": "plots_c35622c9",
+            "vmArgs": "--module-path C:/dev/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        },
+        {
+            "type": "java",
+            "name": "MainFunc",
+            "request": "launch",
+            "mainClass": "MainFunc",
+            "projectName": "plots_c35622c9"
+        },
+        {
+            "type": "java",
+            "name": "PieChartPlot",
+            "request": "launch",
+            "mainClass": "PieChartPlot",
+            "projectName": "plots_c35622c9"
+        },
+        {
+            "type": "java",
+            "name": "Utility",
+            "request": "launch",
+            "mainClass": "Utility",
+            "projectName": "plots_c35622c9"
+        },
+        {
+            "type": "java",
+            "name": "deleteEmptyrows",
+            "request": "launch",
+            "mainClass": "deleteEmptyrows",
+            "projectName": "plots_c35622c9"
         }
     ]
 }
