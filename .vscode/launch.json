@@ -1,0 +1,44 @@
+{
+    // Используйте IntelliSense, чтобы узнать о возможных атрибутах.
+    // Наведите указатель мыши, чтобы просмотреть описания существующих атрибутов.
+    // Для получения дополнительной информации посетите: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "deleteEmptyrows",
+            "request": "launch",
+            "mainClass": "deleteEmptyrows",
+            "projectName": "fx_try3_1fcd1aa6"
+        },
+        {
+            "type": "java",
+            "name": "MainFunc",
+            "request": "launch",
+            "mainClass": "MainFunc",
+            "projectName": "fx_try3_1fcd1aa6"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "fx_try3_1fcd1aa6",
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.controls,javafx.fxml"
+        },
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "fx_try3_bace5f36",
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.controls,javafx.fxml"
+        }
+    ]
+}
