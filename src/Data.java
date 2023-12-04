@@ -48,8 +48,11 @@ public class Data {
      * @param fileName
      */
     public Data(String fileName){
+        this(new File(fileName));
+    }
+
+    public Data(File fin){
         try {
-            File fin = new File(fileName);          //data file
             Scanner fileScanner = new Scanner(fin); //scans file line by line
             String line;                            //holds scanned line
 
