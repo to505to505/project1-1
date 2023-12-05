@@ -6,6 +6,7 @@ import java.awt.Desktop;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -45,12 +46,13 @@ public class Main extends Application {
 
         stage.setFullScreen(false);
         stage.setFullScreenExitHint("Press ESC when you get bored");
-        //stage.setWidth(720); //use scene dimensions
-        //stage.setHeight(480); 
+        stage.setWidth(1080);
+        stage.setHeight(720); 
         //stage.setResizable(false);
-        stage.setX(300);
-        stage.setY(100);
+        //stage.setX(300);
+        //stage.setY(100);
 
+        /*
         ///Text
         Text text = new Text(20.0, 10.0, "Text");
         text.setFont(Font.font("Segoe UI", 13));
@@ -99,87 +101,111 @@ public class Main extends Application {
         ///Group
         Group group = new Group();
         group.getChildren().addAll(text, line, rect, poly, circle, imgView);
-
+        */
 
         ///Side Menu
         VBox vbox = new VBox();
-        vbox.setPrefWidth(100);
+        vbox.setPrefWidth(200);
         vbox.setStyle("-fx-background-color: #333333;");
 
-        Button button1 = new Button("Visualization Sandbox");
+        final String BUTTON1_TEXT = "Visualization Sandbox";
+        Button button1 = new Button(BUTTON1_TEXT);
         button1.setPrefWidth(vbox.getPrefWidth());
         button1.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
 
-        Button button2 = new Button("Step 1 Findings");
+        final String BUTTON2_TEXT = "Step 1 Findings";
+        Button button2 = new Button(BUTTON2_TEXT);
         button2.setPrefWidth(vbox.getPrefWidth());
         button2.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
 
-        Button button3 = new Button("Step 2 Findings");
+        final String BUTTON3_TEXT = "Step 2 Findings";
+        Button button3 = new Button(BUTTON3_TEXT);
         button3.setPrefWidth(vbox.getPrefWidth());
         button3.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
 
-        Button button4 = new Button("Steps 3 & 4 Findings");
+        final String BUTTON4_TEXT = "Steps 3 & 4 Findings";
+        Button button4 = new Button(BUTTON4_TEXT);
         button4.setPrefWidth(vbox.getPrefWidth());
         button4.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
 
+        EventHandler sideMenuHandler = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e){
+                switch(((Button)e.getTarget()).getText()){
+                    case BUTTON1_TEXT:
+                        button1.setStyle("-fx-background-color: #666666; -fx-text-fill: white;");
+                        button2.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
+                        button3.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
+                        button4.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
+                        break;
+                    case BUTTON2_TEXT:
+                        button1.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
+                        button2.setStyle("-fx-background-color: #666666; -fx-text-fill: white;");
+                        button3.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
+                        button4.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
+                        break;
+                    case BUTTON3_TEXT:
+                        button1.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
+                        button2.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");    
+                        button3.setStyle("-fx-background-color: #666666; -fx-text-fill: white;");
+                        button4.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
+                        
+                        break;
+                    case BUTTON4_TEXT:
+                        button1.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
+                        button2.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
+                        button3.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
+                        button4.setStyle("-fx-background-color: #666666; -fx-text-fill: white;");
+                        break;
+                    default:
+                }
+            }
+        };
+
+        button1.setOnAction(sideMenuHandler);
+        button2.setOnAction(sideMenuHandler);
+        button3.setOnAction(sideMenuHandler);
+        button4.setOnAction(sideMenuHandler);
         vbox.getChildren().addAll(button1, button2, button3, button4);
+
+        vbox.addEventFilter(ActionEvent.ACTION, new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e){
+
+            }
+        });
 
         ///Menu Bar
         MenuBar menuBar = new MenuBar();
-            Menu dataMenu = new Menu("Data");
-            MenuItem addData = new MenuItem("add data");
+        Menu dataMenu = dataMenu(stage);
             
-            addData.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent e){
-                    dataImport(stage);
-                    int dC = dataCount++;
-                    Menu data = new Menu("data" + dC);
-                    MenuItem rmData = new MenuItem("remove data");
-                    rmData.setOnAction(new EventHandler<ActionEvent>(){
-                        public void handle(ActionEvent e){
-                            dataMenu.getItems().remove(data);
-                            dataList.remove(dataCount - removeCount++);
-                            System.out.println(dataList.size());
-                        }
-                    });
-                    data.getItems().add(rmData);
-                    dataMenu.getItems().add(data);
-                    System.out.println(dataList.size());
-                }
-            });
-            
-            dataMenu.getItems().addAll(addData);
+        Menu preferencesMenu = new Menu("Preferences");
+        Menu fontSMenu = new Menu("Font");
+            MenuItem font1 = new MenuItem("font1");
+        fontSMenu.getItems().addAll(font1);
+        Menu sizeSMenu = new Menu("Size");
+        Menu styleSMeun = new Menu("Style");
+        preferencesMenu.getItems().addAll(fontSMenu, sizeSMenu, styleSMeun);
 
-            Menu preferencesMenu = new Menu("Preferences");
-            Menu fontSMenu = new Menu("Font");
-                MenuItem font1 = new MenuItem("font1");
-            fontSMenu.getItems().addAll(font1);
-            Menu sizeSMenu = new Menu("Size");
-            Menu styleSMeun = new Menu("Style");
-            preferencesMenu.getItems().addAll(fontSMenu, sizeSMenu, styleSMeun);
-
-            Menu menu = new Menu("Chose the plot");
-            MenuItem histogramItem = new MenuItem("Histogram of raw data");
-            MenuItem piechartItem = new MenuItem("PieChart of cum_laude");
-            MenuItem piechartItem1 = new MenuItem("Similarity between 2 (Scatter plot)");
-            MenuItem pieCHartItem2 = new MenuItem("Course order ");
-            MenuItem pie = new MenuItem("Predictions Evaluation (Table)");
-            menu.getItems().addAll(histogramItem, piechartItem, piechartItem1, pieCHartItem2, pie);
+        Menu menu = new Menu("Chose the plot");
+        MenuItem histogramItem = new MenuItem("Histogram of raw data");
+        MenuItem piechartItem = new MenuItem("PieChart of cum_laude");
+        MenuItem piechartItem1 = new MenuItem("Similarity between 2 (Scatter plot)");
+        MenuItem pieCHartItem2 = new MenuItem("Course order ");
+        MenuItem pie = new MenuItem("Predictions Evaluation (Table)");
+        menu.getItems().addAll(histogramItem, piechartItem, piechartItem1, pieCHartItem2, pie);
         menuBar.getMenus().addAll(dataMenu, preferencesMenu, menu);
 
+        ///Sandbox Pane
+        BorderPane sandbox = new BorderPane();
+        //sandbox.setAlignment(graph, Pos.CENTER);
 
 
-
-        ///Border Pane
+        ///Root
         BorderPane root = new BorderPane();
         root.setLeft(vbox);
         root.setTop(menuBar);
-        root.setCenter(group);
-
-
+        root.setCenter(sandbox);
        
-        Scene scene = new Scene(root, 720, 480);
+        Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
         
@@ -201,8 +227,42 @@ public class Main extends Application {
         launch(args);
     }
 
+    /**
+     * Creates a menu that facilitates data import functionality to the program.
+     * @param stage
+     * @return
+     */
+    private Menu dataMenu(Stage stage){
+        Menu dataMenu = new Menu("Data");
+        MenuItem addData = new MenuItem("add data");
+        addData.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+                dataImport(stage);
+                int dC = dataCount++;
+                Menu data = new Menu("data" + dC);
+                MenuItem rmData = new MenuItem("remove data");
+                rmData.setOnAction(new EventHandler<ActionEvent>(){
+                    public void handle(ActionEvent e){
+                        dataMenu.getItems().remove(data);
+                        dataList.remove(dataCount - removeCount++);
+                        //System.out.println(dataList.size());
+                    }
+                });
+                data.getItems().add(rmData);
+                dataMenu.getItems().add(data);
+                //System.out.println(dataList.size());
+            }
+        });
+        dataMenu.getItems().addAll(addData);
+        return dataMenu;
+    }
+
+    /**
+     * Creates a menu used to import the data from a .csv file into the program.
+     * @param stage
+     */
     private void dataImport(Stage stage){
-        ///Read data files
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Text files", "*.csv");
         fileChooser.setTitle("Import Data");
@@ -213,14 +273,6 @@ public class Main extends Application {
             //openFile(file);
         } else {
             Data data = new Data("data/bugData.csv");
-        }
-    }
-
-    private void openFile(File file) {
-        try {
-            desktop.open(file);
-        } catch (IOException exc) {
-            System.out.println(exc);
         }
     }
 }
