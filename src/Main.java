@@ -18,6 +18,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.PieChart;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
@@ -51,7 +52,7 @@ public class Main extends Application {
     private static ArrayList<Data> dataList = new ArrayList<Data>();
     private static ObservableList<String> columnList;
 
-    final static int BUTTON_COUNT = 5;
+    final static int BUTTON_COUNT = 6;
     final static String[] BUTTON_TEXTS = {"Visualization Sandbox", "Step 1 Findings", "Scatter", "Step 2 Findings", "Steps 3 & 4 Findings", "PieChartsCum"};
     
 
@@ -127,6 +128,51 @@ public class Main extends Application {
         ChoiceBox<String> yAxis = new ChoiceBox<String>(columnList);
         yAxis.setValue("------------");
     }
+
+    private VBox PieChart(Stage stage) {
+        VBox vBox = new VBox();
+
+       
+
+        ComboBox<String> filterComboBox = new ComboBox<>();
+        filterComboBox.setItems(FXCollections.observableArrayList("GPA greater than 7.5", "No grades lower than 7"));
+        filterComboBox.getSelectionModel().selectFirst(); // Выбор первого элемента по умолчанию
+
+
+        ComboBox<String> dataSelector = new ComboBox<>();
+        dataSelector.setItems(FXCollections.observableArrayList("CurrentGrades", "GraduateGrades"));
+        dataSelector.setValue("GraduateGrades"); // Установите значение по умолчанию
+        // Creating a Pie chart
+
+        PieChart pieChart = new PieChart();
+
+
+        filterComboBox.setOnAction(e -> updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue()));
+        dataSelector.setOnAction(e -> updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue()));
+
+
+
+
+
+        updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue());
+        
+        vBox.getChildren().addAll(dataSelector, filterComboBox, pieChart);
+        return vBox;
+
+
+    }
+    private void updatePieChart(String selectedData, PieChart PieChart, String selectedFilter) {
+        PieChart.getData().clear(); // Очистка предыдущих данных
+        ArrayList<Integer> cum_students = MainFunc.cum(selectedData, selectedFilter);
+        int all_students_length = MainFunc.data_size(selectedData);
+        PieChart.Data slice1 = new PieChart.Data("Cum-Laude", cum_students.size());
+        PieChart.Data slice2 = new PieChart.Data("Others", all_students_length-cum_students.size());
+        PieChart.getData().add(slice1);
+        PieChart.getData().add(slice2);
+        PieChart.setLabelsVisible(true);
+    }
+        
+
 
     private VBox Scatter(Stage stage){
 
@@ -258,8 +304,8 @@ public class Main extends Application {
                         break;
                     case 5: 
                         buttons[i].setStyle("-fx-background-color: #666666; -fx-text-fill: white;");
-                        
-                        //root.setCenter(j);
+                        VBox vBox1 = PieChart(stage);
+                        root.setCenter(vBox1);
                         stage.show();
                         break;
                     default:
