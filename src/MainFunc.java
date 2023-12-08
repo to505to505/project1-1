@@ -20,6 +20,8 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javafx.beans.binding.IntegerBinding;
+import javafx.scene.chart.XYChart;
+import javafx.scene.shape.Circle;
 
 public class MainFunc {
     public static String[] cNames0 = new String[30];
@@ -262,6 +264,55 @@ public class MainFunc {
         return 0;
     }
 
+    public static XYChart.Series<Number, Number> getScatter(String course1, String course2, String data) {
+        MainFunc MainFunc = new MainFunc();
+        XYChart.Series<Number, Number> series  = new XYChart.Series<>();
+
+        double [][] data_num = null;
+        switch (data) {
+            case "CurrentGrades":
+                
+                data_num = data0;
+
+            
+                break;
+            case "GraduateGrades":
+            
+                data_num = data1;
+                break;
+        }
+        int course_col_num1 = 0;
+        int course_col_num2  = 0;
+        for (int k = 0; k < cNames0.length; k++) {
+                    if (cNames0[k].equals(course1)) {
+                        course_col_num1= k;
+                    }
+                    if (cNames0[k].equals(course2)) {
+                        course_col_num2= k;
+                    }
+                }
+
+        double[][] indexes_array = new double[11][11];
+        for(int i =0; i<data_num.length; i++) { 
+            if(data_num[i][course_col_num1]!=-1 && data_num[i][course_col_num2]!=-1) {
+                int property1 = (int) data_num[i][course_col_num1];
+                int property2 = (int) data_num[i][course_col_num2];
+                indexes_array[property1][property2]+=0.2;
+            }
+        }
+        for(int j =0; j<indexes_array.length; j++) {
+            for(int k =0 ;k<indexes_array[j].length; k++) {
+                if(indexes_array[j][k]!=0) {
+                XYChart.Data<Number, Number> data_piece = new XYChart.Data<>(j, k);
+                Circle circle = new Circle(indexes_array[j][k]);
+                data_piece.setNode(circle);
+                series.getData().add(data_piece); 
+                }
+            }
+        }
+        return series;
+
+        }
 
     public static void converter(String[] cNames, int[] sIDs, double[][] data, String fileName, boolean print) {
         try {

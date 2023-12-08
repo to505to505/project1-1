@@ -20,6 +20,7 @@ public class Data {
     public String[] columnNames;
     public int[] studentIDs;
     public double[][] data;
+    public String name;
 
     private static final long SAMPLE_SEED = 1617316862; //RNG seed used to create forest samples
     private static final long SHUFFLE_SEED = SAMPLE_SEED+1; //RNG seed used to shuffle data before splitting it
