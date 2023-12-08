@@ -38,10 +38,10 @@ public class Main extends Application {
 
     //private final Desktop desktop = Desktop.getDesktop();
 
-    int dataCount = 0; //used to count Data objects
-    int removeCount = 1; //number of removed Data objects offset by 1
-    ArrayList<Data> dataList = new ArrayList<Data>();
-    ObservableList<String> columnList;
+     int dataCount = 0; //used to count Data objects
+    private int removeCount = 1; //number of removed Data objects offset by 1
+    private ArrayList<Data> dataList = new ArrayList<Data>();
+    private ObservableList<String> columnList;
 
     private void refreshColumnList(FlowPane filters){ //has a problem when the same column names appear more than once - considers them as different.
         ArrayList<String> temp = new ArrayList<String>();
@@ -83,6 +83,7 @@ public class Main extends Application {
         //Label yAxisLab = new Label("X Axis: ");
         ComboBox<String> yAxis = new ComboBox<String>();
         yAxis.setValue("----------");
+
         filters.getChildren().addAll(xAxis, yAxis);
         filters.getChildren().remove(0);
         filters.getChildren().add(0, xAxis);
@@ -127,8 +128,12 @@ public class Main extends Application {
                         button3.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
                         button4.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
                         BorderPane f = new BorderPane();
-                        f.setStyle("-fx-background-color: #444444");
-                        root.setCenter(f);
+                        f.setStyle("-fx-background-color: #999999");
+                         Group diagramGroup = new Group();
+                        Line line = new Line(0.0, 0.0, 100.0, 100.0);
+                        diagramGroup.getChildren().addAll(line);
+                        sandbox.setCenter(diagramGroup);
+                        root.setCenter(diagramGroup);
                         stage.show();
                         break;
                     case BUTTON3_TEXT:

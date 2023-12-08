@@ -15,50 +15,50 @@
             "name": "Data",
             "request": "launch",
             "mainClass": "Data",
-            "projectName": "plots_c35622c9"
+            "projectName": "plots_b5ad89ff"
         },
         {
             "type": "java",
             "name": "HistogramChart",
             "request": "launch",
             "mainClass": "HistogramChart",
-            "projectName": "plots_c35622c9"
+            "projectName": "plots_b5ad89ff"
         },
         {
             "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "Main",
-            "projectName": "plots_c35622c9",
-            "vmArgs": "--module-path C:/dev/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
             "name": "MainFunc",
             "request": "launch",
             "mainClass": "MainFunc",
-            "projectName": "plots_c35622c9"
+            "projectName": "plots_b5ad89ff"
         },
         {
             "type": "java",
             "name": "PieChartPlot",
             "request": "launch",
             "mainClass": "PieChartPlot",
-            "projectName": "plots_c35622c9"
+            "projectName": "plots_b5ad89ff"
         },
         {
             "type": "java",
             "name": "Utility",
             "request": "launch",
             "mainClass": "Utility",
-            "projectName": "plots_c35622c9"
+            "projectName": "plots_b5ad89ff"
         },
         {
             "type": "java",
             "name": "deleteEmptyrows",
             "request": "launch",
             "mainClass": "deleteEmptyrows",
-            "projectName": "plots_c35622c9"
+            "projectName": "plots_b5ad89ff"
         }
     ]
 }
