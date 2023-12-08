@@ -1,15 +1,27 @@
 {
     "java.project.sourcePaths": ["src"],
     "java.project.outputPath": "bin",
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx-swt.jar",
-        "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx.base.jar",
-        "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx.controls.jar",
-        "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx.fxml.jar",
-        "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx.graphics.jar",
-        "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx.media.jar",
-        "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx.swing.jar",
-        "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx.web.jar"
-    ]
+    "java.project.referencedLibraries": {
+        "include": [
+            "lib/**/*.jar",
+            "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx-swt.jar",
+            "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx.base.jar",
+            "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx.controls.jar",
+            "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx.fxml.jar",
+            "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx.graphics.jar",
+            "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx.media.jar",
+            "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx.swing.jar",
+            "/Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib/javafx.web.jar"
+        ],
+        "exclude": [
+            "lib/javafx-sdk-21.0.1/lib/javafx-swt.jar",
+            "lib/javafx-sdk-21.0.1/lib/javafx.base.jar",
+            "lib/javafx-sdk-21.0.1/lib/javafx.controls.jar",
+            "lib/javafx-sdk-21.0.1/lib/javafx.fxml.jar",
+            "lib/javafx-sdk-21.0.1/lib/javafx.media.jar",
+            "lib/javafx-sdk-21.0.1/lib/javafx.swing.jar",
+            "lib/javafx-sdk-21.0.1/lib/javafx.web.jar",
+            "lib/javafx-sdk-21.0.1/lib/javafx.graphics.jar"
+        ]
+    }
 }

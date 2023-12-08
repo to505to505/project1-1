@@ -1,9 +1,14 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.awt.Desktop;
 import java.awt.Label;
-
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,8 +45,72 @@ public class Main extends Application {
 
     int dataCount = 0; //used to count Data objects
     int removeCount = 1; //number of removed Data objects offset by 1
-    ArrayList<Data> dataList = new ArrayList<Data>();
+    public static ArrayList<Data> dataList = new ArrayList<Data>();
     ObservableList<String> columnList;
+
+
+    
+
+
+    /* Methods for visualizition */
+
+
+    //create frequency map for histogram
+    public static Map<String, Integer> raw_data_hist(String data_name, String course) {
+        Data right_data = new Data();
+        for (Data data : dataList) {
+            if (data.name.equals(data_name)) {
+                right_data = data;
+            }
+        }
+        int course_col_num = 0;
+        for (int i = 0; i < right_data.columnNames.length; i++) {
+            if (right_data.columnNames[i].equals(course)) {
+                course_col_num = i;
+            }
+        }
+        
+        Map<String, Integer> frequencyMap = new HashMap<>();
+        
+        for(int i =0; i<right_data.data.length; i++) {
+            for(int j = 0; j<right_data.data[i].length; j++) {
+                if(j==course_col_num)
+                    frequencyMap.put(String.valueOf(Math.round(right_data.data[i][j])), frequencyMap.getOrDefault(String.valueOf(Math.round(right_data.data[i][j])), 0) + 1);  
+            }
+        }
+        return frequencyMap;
+    
+    }
+
+    // sorting LAL
+    public static List<String> LalSorted(Data right_data) {
+        int Lal_count_col_n = 0;
+        List<Integer> originalList = new ArrayList<>();
+        for(int k=0; k<right_data.data.length; k++) {
+            if(right_data.data[k].equals("Lal Count")) {
+                Lal_count_col_n = k;
+            }
+            }
+        
+        for(int i =0; i < right_data.data.length; i++) {
+            for(int j =0; j <right_data.data[i].length; j++) {
+                if(j==Lal_count_col_n) {
+                    originalList.add((int)right_data.data[i][j]);
+                }
+                    
+            }
+        }
+        Set<Integer> uniqueSet = new HashSet<>(originalList);
+        List<Integer> uniqueList = new ArrayList<>(uniqueSet);
+        List<Integer> sortedIntList = uniqueList.stream().sorted().collect(Collectors.toList());
+        List<String> stringList = new ArrayList<>();
+        stringList = sortedIntList.stream()
+                                               .map(Object::toString)
+                                               .collect(Collectors.toList());
+        return stringList;
+    }
+
+
 
     private void refreshColumnList(FlowPane filters){ //has a problem when the same column names appear more than once - considers them as different.
         ArrayList<String> temp = new ArrayList<String>();
@@ -57,6 +126,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
+
+        VBox right_vbox = new VBox();
 
         Image icon = new Image("data/icon.png");
         stage.getIcons().add(icon);
@@ -193,19 +264,19 @@ public class Main extends Application {
         ///add panes to root
         root.setLeft(vbox);
         root.setTop(menuBar);
+        root.setRight(right_vbox);
        
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
         
 
-        histogramItem.setOnAction(event -> openHistogramWindow(stage, scene));
+        histogramItem.setOnAction(event -> openHistogramWindow(stage, scene, right_vbox));
         piechartItem.setOnAction(event -> openPieChartWindow(stage, scene));
     }
 
-    private void openHistogramWindow(Stage stage, Scene scene) {
-        HistogramChart histogramChart = new HistogramChart(scene);
-        histogramChart.start(stage); 
+    private void openHistogramWindow(Stage stage, Scene scene, VBox right_vbox) {
+        right_vbox = HistogramChart.createHistogram();
     }
     private void openPieChartWindow(Stage stage, Scene scene) {
         PieChartPlot pieChart = new PieChartPlot(scene);
@@ -213,6 +284,17 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+
+        Data data_current = new Data("src/data/CurrentGrades.csv");
+        data_current.name = "CurrentGrades";
+        dataList.add(data_current);
+        Data data_graduate = new Data("src/data/bugData.csv");
+        data_graduate.name = "GraduateGrades";
+        dataList.add(data_graduate);
+        Data data_student_info = new Data("src/data/StudentInfo.csv");
+        data_student_info.name = "StudentInfo";
+        dataList.add(data_student_info);
+
         launch(args);
     }
 
