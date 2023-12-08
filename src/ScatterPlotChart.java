@@ -31,7 +31,7 @@ public class ScatterPlotChart extends Application {
 
     @Override
     public void start(Stage stage) {
-        VBox vBox = new VBox();
+       VBox vBox = new VBox();
        stage.setTitle("Scatter Chart");
        Button back = new Button("Get back");
        back.setOnAction(e -> stage.setScene(previous_scene));

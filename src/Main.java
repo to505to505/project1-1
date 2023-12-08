@@ -17,6 +17,9 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.ScatterChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
@@ -43,12 +46,13 @@ public class Main extends Application {
 
     //private final Desktop desktop = Desktop.getDesktop();
 
-    int dataCount = 0; //used to count Data objects
-    int removeCount = 1; //number of removed Data objects offset by 1
-    public static ArrayList<Data> dataList = new ArrayList<Data>();
-    ObservableList<String> columnList;
+    private static int dataCount = 0; //used to count Data objects
+    private static int removeCount = 1; //number of removed Data objects offset by 1
+    private static ArrayList<Data> dataList = new ArrayList<Data>();
+    private static ObservableList<String> columnList;
 
-
+    final static int BUTTON_COUNT = 10;
+    final static String[] BUTTON_TEXTS = {"Visualization Sandbox", "Step 1 Findings", "Bar Chart", "Histogram", "Pie Chart", "Scatter Plot", "Swarm Plot", "Step 2 Findings", "Steps 3 & 4 Findings", "PieChartsCum"};
     
 
 
@@ -124,10 +128,47 @@ public class Main extends Application {
         yAxis.setValue("------------");
     }
 
+    private VBox Scatter(Stage stage){
+
+        VBox vBox = new VBox();
+
+        ComboBox<String> filter1ComboBox = new ComboBox<>();
+        filter1ComboBox.setItems(FXCollections.observableArrayList(MainFunc.all_courses));
+        filter1ComboBox.getSelectionModel().selectFirst(); // selecting default value
+
+
+        ComboBox<String> filter2ComboBox= new ComboBox<>();
+        filter2ComboBox.setItems(FXCollections.observableArrayList(MainFunc.all_courses));
+        filter2ComboBox.getSelectionModel().selectLast(); // selecting default value
+
+        ComboBox<String> dataSelector = new ComboBox<>();
+        dataSelector.setItems(FXCollections.observableArrayList("GraduateGrades", "CurrentGrades"));
+        dataSelector.getSelectionModel().selectFirst(); // selecting default value
+
+
+        NumberAxis xAxis = new NumberAxis();
+        NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel(filter1ComboBox.getValue());
+        yAxis.setLabel(filter2ComboBox.getValue());
+        
+        ScatterChart<Number, Number> scatterChart = new ScatterChart<>(xAxis, yAxis);
+        
+        
+        
+        updateScatter(dataSelector.getValue(), scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue() );
+
+
+        filter1ComboBox.setOnAction(e -> updateScatter(dataSelector.getValue(), scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue()));
+        filter2ComboBox.setOnAction(e -> updateScatter(dataSelector.getValue(),scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue()));
+
+        vBox.getChildren().addAll(dataSelector, filter1ComboBox,filter2ComboBox, scatterChart);
+
+        return vBox;
+    
+            
+    } 
     @Override
     public void start(Stage stage) {
-
-        VBox right_vbox = new VBox();
 
         Image icon = new Image("data/icon.png");
         stage.getIcons().add(icon);
@@ -142,103 +183,107 @@ public class Main extends Application {
         ///Root
         BorderPane root = new BorderPane();
 
-        ///Sandbox Pane
+        VBox startScreen = new VBox();
+        startScreen.setStyle("-fx-background-color: #fff5ee");
+
+         ///Sandbox Pane
         BorderPane sandbox = new BorderPane();
         sandbox.setStyle("-fx-background-color: #fff5ee");
         //sandbox.setAlignment(graph, Pos.CENTER);
         //Sandbox Filter Bar FlowPane
         FlowPane filters = new FlowPane(10, 10);
+        filters.setStyle("-fx-background-color: #554222");
         //Label xAxisLab = new Label("X Axis: ");
-        ComboBox<String> xAxis = new ComboBox<String>();
-        xAxis.setValue("----------");
+        ComboBox<String> xAxiss = new ComboBox<String>();
+        xAxiss.setValue("----------");
         //Label yAxisLab = new Label("X Axis: ");
-        ComboBox<String> yAxis = new ComboBox<String>();
-        yAxis.setValue("----------");
-
-        filters.getChildren().addAll(xAxis, yAxis);
+        ComboBox<String> yAxiss = new ComboBox<String>();
+        yAxiss.setValue("----------");
+        filters.getChildren().addAll(xAxiss, yAxiss);
         filters.getChildren().remove(0);
-        filters.getChildren().add(0, xAxis);
+        filters.getChildren().add(0, xAxiss);
         sandbox.setTop(filters);
 
         ///Side Menu
-        VBox vbox = new VBox();
-        vbox.setPrefWidth(200);
-        vbox.setStyle("-fx-background-color: #333333;");
+        VBox sideMenu = new VBox();
+        sideMenu.setPrefWidth(200);
+        sideMenu.setStyle("-fx-background-color: #333333;");
 
-        final String BUTTON1_TEXT = "Visualization Sandbox";
-        Button button1 = new Button(BUTTON1_TEXT);
-        button1.setPrefWidth(vbox.getPrefWidth());
-        button1.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
-        final String BUTTON2_TEXT = "Step 1 Findings";
-        Button button2 = new Button(BUTTON2_TEXT);
-        button2.setPrefWidth(vbox.getPrefWidth());
-        button2.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
-        final String BUTTON3_TEXT = "Step 2 Findings";
-        Button button3 = new Button(BUTTON3_TEXT);
-        button3.setPrefWidth(vbox.getPrefWidth());
-        button3.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
-        final String BUTTON4_TEXT = "Steps 3 & 4 Findings";
-        Button button4 = new Button(BUTTON4_TEXT);
-        button4.setPrefWidth(vbox.getPrefWidth());
-        button4.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
+        Button[] buttons = new Button[BUTTON_COUNT];
+        for(int i = 0; i < buttons.length; i++){
+            buttons[i] = new Button(BUTTON_TEXTS[i]);
+            buttons[i].setPrefWidth(sideMenu.getPrefWidth());
+            buttons[i].setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
+        }
 
-        EventHandler sideMenuHandler = new EventHandler<ActionEvent>() {
+        EventHandler<ActionEvent> sideMenuHandler = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e){
-                switch(((Button)e.getTarget()).getText()){
-                    case BUTTON1_TEXT:
-                        button1.setStyle("-fx-background-color: #666666; -fx-text-fill: white;");
-                        button2.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
-                        button3.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
-                        button4.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
+                String but = ((Button)e.getTarget()).getText();
+                int i = 0;
+                for(;i < BUTTON_TEXTS.length; i++)
+                    if(but.equals(BUTTON_TEXTS[i]))
+                        break;
+                buttons[i].setStyle("-fx-background-color: #666666; -fx-text-fill: white;");
+                switch(i){
+                    case 0:
                         root.setCenter(sandbox);
+                        stage.show();       
+                        break;
+                    case 1:
+                        root.setCenter(startScreen);
                         stage.show();
                         break;
-                    case BUTTON2_TEXT:
-                        button1.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
-                        button2.setStyle("-fx-background-color: #666666; -fx-text-fill: white;");
-                        button3.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
-                        button4.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
-                        BorderPane f = new BorderPane();
-                        f.setStyle("-fx-background-color: #999999");
-                         Group diagramGroup = new Group();
-                        Line line = new Line(0.0, 0.0, 100.0, 100.0);
-                        diagramGroup.getChildren().addAll(line);
-                        sandbox.setCenter(diagramGroup);
-                        root.setCenter(diagramGroup);
+                    case 2:
+                        root.setCenter(startScreen);
                         stage.show();
                         break;
-                    case BUTTON3_TEXT:
-                        button1.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
-                        button2.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");    
-                        button3.setStyle("-fx-background-color: #666666; -fx-text-fill: white;");
-                        button4.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
+                    case 3:
+                        VBox vBox = Scatter(stage);
+                        root.setCenter(vBox);
+                        stage.show();
+                        break;
+                    case 4:
+                        root.setCenter(startScreen);
+                        stage.show();
+                        break;
+                    case 5:
+                        root.setCenter(startScreen);
+                        stage.show();
+                        break;
+                    case 6:
+                        root.setCenter(startScreen);
+                        stage.show();
+                        break;
+                    case 7:
+                        root.setCenter(startScreen);
+                        stage.show();
+                        break;
+                    case 8:
                         BorderPane g = new BorderPane();
                         g.setStyle("-fx-background-color: #333333");
                         root.setCenter(g);
                         stage.show();
                         break;
-                    case BUTTON4_TEXT:
-                        button1.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
-                        button2.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
-                        button3.setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
-                        button4.setStyle("-fx-background-color: #666666; -fx-text-fill: white;");
-                        BorderPane h = new BorderPane();
-                        h.setStyle("-fx-background-color: #222222");
-                        root.setCenter(h);
+                    case 9:
+                        root.setCenter(startScreen);
+                        stage.show();
+                        break;
+                    case 10: 
+                        root.setCenter(startScreen);
                         stage.show();
                         break;
                     default:
                 }
+                for(int j = 0; i < buttons.length; j++)
+                    if(j!=i) buttons[j].setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
             }
         };
-        button1.setOnAction(sideMenuHandler);
-        button2.setOnAction(sideMenuHandler);
-        button3.setOnAction(sideMenuHandler);
-        button4.setOnAction(sideMenuHandler);
-        vbox.getChildren().addAll(button1, button2, button3, button4);
+        
+        for(Button b: buttons) b.setOnAction(sideMenuHandler);
+        sideMenu.getChildren().addAll(buttons);
         ///End Side Menu
 
-        vbox.addEventFilter(ActionEvent.ACTION, new EventHandler<ActionEvent>() {
+        sideMenu.addEventFilter(ActionEvent.ACTION, new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e){
 
             }
@@ -267,39 +312,44 @@ public class Main extends Application {
 
 
         ///add panes to root
-        root.setLeft(vbox);
+        root.setLeft(sideMenu);
         root.setTop(menuBar);
-        root.setRight(right_vbox);
+        
+        
        
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
         
 
-        histogramItem.setOnAction(event -> openHistogramWindow(stage, scene, right_vbox));
-        piechartItem.setOnAction(event -> openPieChartWindow(stage, scene));
+        histogramItem.setOnAction(e -> openHistogramWindow(stage, scene));
+        piechartItem.setOnAction(e -> openPieChartWindow(stage, scene));
+        piechartItem1.setOnAction(e -> openScatterPlotWindow(stage, scene));
     }
 
-    private void openHistogramWindow(Stage stage, Scene scene, VBox right_vbox) {
-        right_vbox = HistogramChart.createHistogram();
+    private void openHistogramWindow(Stage stage, Scene scene) {
+        HistogramChart histogram = new HistogramChart(scene);
+        histogram.start(stage);
     }
     private void openPieChartWindow(Stage stage, Scene scene) {
         PieChartPlot pieChart = new PieChartPlot(scene);
         pieChart.start(stage); 
     }
+    private void openScatterPlotWindow(Stage stage, Scene scene) {
+        ScatterPlotChart scatterPlot = new ScatterPlotChart(scene);
+        scatterPlot.start(stage);
+    }
+    private void updateScatter(String selectedData, ScatterChart<Number, Number> ScatterChart, String selectedFilter1, String selectedFilter2) {
+        ScatterChart.getData().clear();
+        
+        XYChart.Series<Number, Number> series =  MainFunc.getScatter(selectedFilter1, selectedFilter2,  selectedData);
+        ScatterChart.getData().add(series);
+        ScatterChart.layout();
+
+    }
 
     public static void main(String[] args) {
-
-        Data data_current = new Data("src/data/CurrentGrades.csv");
-        data_current.name = "CurrentGrades";
-        dataList.add(data_current);
-        Data data_graduate = new Data("src/data/bugData.csv");
-        data_graduate.name = "GraduateGrades";
-        dataList.add(data_graduate);
-        Data data_student_info = new Data("src/data/StudentInfo.csv");
-        data_student_info.name = "StudentInfo";
-        dataList.add(data_student_info);
-
+        dataInit();
         launch(args);
     }
 
@@ -354,5 +404,17 @@ public class Main extends Application {
         } else {
             return false;
         }
+    }
+
+    private static void dataInit(){
+        Data data_current = new Data("src/data/CurrentGrades.csv");
+        data_current.name = "CurrentGrades";
+        dataList.add(data_current);
+        Data data_graduate = new Data("src/data/bugData.csv");
+        data_graduate.name = "GraduateGrades";
+        dataList.add(data_graduate);
+        Data data_student_info = new Data("src/data/StudentInfo.csv");
+        data_student_info.name = "StudentInfo";
+        dataList.add(data_student_info);
     }
 }

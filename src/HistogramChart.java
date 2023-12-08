@@ -12,6 +12,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+
 import java.util.ArrayList;
 import javafx.scene.layout.VBox;
 import java.util.Arrays;
@@ -22,10 +25,19 @@ import java.io.BufferedReader;
 import java.lang.reflect.Array;
 import java.util.Random;
 
+
+import javafx.scene.layout.StackPane;
+
 public class HistogramChart  {
+    public Scene previous_scene;
 
+    public HistogramChart(Scene scene) {
+        this.previous_scene = scene;
+    }
 
-    public static VBox createHistogram() {
+    @Override
+    public void start(Stage stage) {
+
         VBox vBox = new VBox();
 
         ComboBox<String> filterComboBox = new ComboBox<>();
@@ -41,6 +53,12 @@ public class HistogramChart  {
         NumberAxis yAxis = new NumberAxis();
         BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
     
+
+        EventHandler<ActionEvent> gii = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+                System.out.println("Hello World");
+            }
+        };
 
         
         filterComboBox.setOnAction(e -> updateHistogram(dataSelector.getValue(), barChart, filterComboBox.getValue()));
@@ -66,7 +84,7 @@ public class HistogramChart  {
         updateHistogram(dataSelector.getValue(), barChart, filterComboBox.getValue());
 
         vBox.getChildren().addAll(dataSelector, filterComboBox, barChart);
-        return vBox;
+        
     }
    
 
