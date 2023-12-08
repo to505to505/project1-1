@@ -12,11 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-
 import java.util.ArrayList;
-import javafx.scene.layout.VBox;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +21,9 @@ import java.io.BufferedReader;
 import java.lang.reflect.Array;
 import java.util.Random;
 
+public class HistogramChart extends Application {
 
-import javafx.scene.layout.StackPane;
-
-public class HistogramChart  {
+    private final Random random = new Random();
     public Scene previous_scene;
 
     public HistogramChart(Scene scene) {
@@ -37,8 +32,10 @@ public class HistogramChart  {
 
     @Override
     public void start(Stage stage) {
-
         VBox vBox = new VBox();
+
+        Button back = new Button("Get back");
+        back.setOnAction(e -> stage.setScene(previous_scene));
 
         ComboBox<String> filterComboBox = new ComboBox<>();
         filterComboBox.setItems(FXCollections.observableArrayList(MainFunc.all_courses));
@@ -52,13 +49,7 @@ public class HistogramChart  {
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
         BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
-    
-
-        EventHandler<ActionEvent> gii = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e) {
-                System.out.println("Hello World");
-            }
-        };
+        BorderPane borderPane;
 
         
         filterComboBox.setOnAction(e -> updateHistogram(dataSelector.getValue(), barChart, filterComboBox.getValue()));
@@ -83,17 +74,21 @@ public class HistogramChart  {
         // Начальное заполнение гистограммы данными
         updateHistogram(dataSelector.getValue(), barChart, filterComboBox.getValue());
 
-        vBox.getChildren().addAll(dataSelector, filterComboBox, barChart);
-        
+        vBox.getChildren().addAll(dataSelector, filterComboBox, barChart, back);
+        Scene scene = new Scene(vBox, 600, 600);
+        stage.setScene(scene);
+        stage.setTitle("Histogram");
+        stage.show();
     }
-   
 
-    public static void updateHistogram(String selectedData, BarChart<String, Number> barChart, String selectedFilter) {
+    private void updateHistogram(String selectedData, BarChart<String, Number> barChart, String selectedFilter) {
         barChart.getData().clear(); // Очистка предыдущих данных
         CategoryAxis xAxis = (CategoryAxis) barChart.getXAxis();
         xAxis.getCategories().clear();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName(selectedData);
+
+
 
 
         //Getting data to draw hist
@@ -135,12 +130,28 @@ public class HistogramChart  {
                 series.getData().add(new XYChart.Data<>(category, (value != null) ? value : 0));
         
     }
+
+        
+        
+
+
+        barChart.getData().add(series);
+        barChart.layout();
+        
+
+
+
 }
 
-        
-        
 
-    
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+
+
+
+
     public static String get_value_names(String value, String course_name) {
         switch (course_name) {
             case "Suruna Value":
@@ -193,4 +204,3 @@ public class HistogramChart  {
 }
 
 }
-

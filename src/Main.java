@@ -18,6 +18,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.PieChart;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
@@ -41,6 +42,14 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.scene.Parent;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import java.util.Arrays;
+
+import java.io.BufferedReader;
+import java.lang.reflect.Array;
+import java.util.Random;
 
 public class Main extends Application {
 
@@ -113,6 +122,205 @@ public class Main extends Application {
                                                .collect(Collectors.toList());
         return stringList;
     }
+
+    private VBox PieChart(Stage stage) {
+        VBox vBox = new VBox();
+
+       
+
+        ComboBox<String> filterComboBox = new ComboBox<>();
+        filterComboBox.setItems(FXCollections.observableArrayList("GPA greater than 7.5", "No grades lower than 7"));
+        filterComboBox.getSelectionModel().selectFirst();
+
+
+        ComboBox<String> dataSelector = new ComboBox<>();
+        dataSelector.setItems(FXCollections.observableArrayList("CurrentGrades", "GraduateGrades"));
+        dataSelector.setValue("GraduateGrades"); 
+        // Creating a Pie chart
+
+        PieChart pieChart = new PieChart();
+
+
+        filterComboBox.setOnAction(e -> updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue()));
+        dataSelector.setOnAction(e -> updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue()));
+
+
+
+
+
+        updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue());
+        
+        vBox.getChildren().addAll(dataSelector, filterComboBox, pieChart);
+        return vBox;
+
+
+    }
+    private void updatePieChart(String selectedData, PieChart PieChart, String selectedFilter) {
+        PieChart.getData().clear();
+        ArrayList<Integer> cum_students = MainFunc.cum(selectedData, selectedFilter);
+        int all_students_length = MainFunc.data_size(selectedData);
+        PieChart.Data slice1 = new PieChart.Data("Cum-Laude", cum_students.size());
+        PieChart.Data slice2 = new PieChart.Data("Others", all_students_length-cum_students.size());
+        PieChart.getData().add(slice1);
+        PieChart.getData().add(slice2);
+        PieChart.setLabelsVisible(true);
+    }
+        
+    private VBox Histogram(Stage stage) {
+        VBox vBox = new VBox();
+
+
+        ComboBox<String> filterComboBox = new ComboBox<>();
+        filterComboBox.setItems(FXCollections.observableArrayList(MainFunc.all_courses));
+        filterComboBox.getSelectionModel().selectFirst();
+
+
+        ComboBox<String> dataSelector = new ComboBox<>();
+        dataSelector.setItems(FXCollections.observableArrayList("CurrentGrades", "GraduateGrades", "StudentInfo"));
+        dataSelector.setValue("GraduateGrades");
+
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+        BorderPane borderPane;
+
+        
+        filterComboBox.setOnAction(e -> updateHistogram(dataSelector.getValue(), barChart, filterComboBox.getValue()));
+        dataSelector.setOnAction(e -> {
+            
+            if(dataSelector.getValue().equals("StudentInfo")) {
+
+                List<String> newItems = Arrays.asList("Suruna Value", "Hurni Level", "Volta ", "Lal Count");
+            
+                filterComboBox.setItems(FXCollections.observableArrayList(newItems));
+                filterComboBox.getSelectionModel().selectFirst();
+            } else {
+                filterComboBox.setItems(FXCollections.observableArrayList(MainFunc.all_courses));
+                filterComboBox.getSelectionModel().selectFirst();
+            }
+            updateHistogram(dataSelector.getValue(), barChart, filterComboBox.getValue());
+        });
+        
+    
+        updateHistogram(dataSelector.getValue(), barChart, filterComboBox.getValue());
+
+        vBox.getChildren().addAll(dataSelector, filterComboBox, barChart);
+        
+    
+        return vBox;
+    }
+    private void updateHistogram(String selectedData, BarChart<String, Number> barChart, String selectedFilter) {
+        barChart.getData().clear();
+        CategoryAxis xAxis = (CategoryAxis) barChart.getXAxis();
+        xAxis.getCategories().clear();
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName(selectedData);
+
+
+
+
+        Map<String, Integer> freqMap = MainFunc.raw_data_hist(selectedData, selectedFilter);
+        ArrayList<String> all_categories= new ArrayList<>();
+        if (selectedData.equals("GraduateGrades")) {
+            List<String> dataToAdd = Arrays.asList("6", "7", "8", "9", "10");
+            all_categories.addAll(dataToAdd);
+            xAxis.setCategories(FXCollections.observableArrayList(dataToAdd));
+
+        } else if (selectedData.equals("CurrentGrades")) {
+            List<String> dataToAdd1 = Arrays.asList("-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+            all_categories.addAll(dataToAdd1);
+            List<String> dataToAddtoShow = Arrays.asList("Missing values", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+            xAxis.setCategories(FXCollections.observableArrayList(dataToAddtoShow));
+        } else if(selectedData.equals("StudentInfo"))
+         {
+            if(selectedFilter.equals("Lal Count")) {
+                List<String> dataToAdd3 = new ArrayList<>(MainFunc.LalSorted());
+                all_categories.addAll(dataToAdd3);
+                xAxis.setCategories(FXCollections.observableArrayList(dataToAdd3));
+            } else {
+            List<String> dataToAdd2 = new ArrayList<String>();
+            for (Map.Entry<String, Integer> entry : freqMap.entrySet()) {
+                dataToAdd2.add(get_value_names(entry.getKey(), selectedFilter));
+                all_categories.add(entry.getKey());
+            }
+            xAxis.setCategories(FXCollections.observableArrayList(dataToAdd2));
+         } }
+        for (String category: all_categories) {
+            Integer value = freqMap.get(category);
+            if(selectedFilter.equals("Hurni Level") || selectedFilter.equals("Suruna Value") || selectedFilter.equals("Volta ")) {
+                String categoryString = get_value_names(category, selectedFilter);
+                series.getData().add(new XYChart.Data<>(categoryString, (value != null) ? value : 0));
+            }
+            if(category.equals("-1")) 
+                series.getData().add(new XYChart.Data<>("Missing values", (value != null) ? value : 0));
+            else
+                series.getData().add(new XYChart.Data<>(category, (value != null) ? value : 0));
+        
+    }
+
+        
+        
+
+
+        barChart.getData().add(series);
+        barChart.layout();
+        
+
+
+
+}
+public static String get_value_names(String value, String course_name) {
+    switch (course_name) {
+        case "Suruna Value":
+            switch (value) {
+                case "0":
+                    return "nulp";
+                case "1":
+                    return "doot";
+                case "2":
+                    return "lobi"; 
+                default:
+                    return "unknown";
+
+            }
+        case "Hurni Level":
+            switch (value) {
+                case "0":
+                    return "nothing";
+                case "1":
+                    return "low";
+                case "2":
+                    return "medium";
+                case "3":
+                    return "high";
+                case "4":
+                    return "full";
+                default:
+                    return "unknown";
+
+            
+            }
+            
+        case "Volta ":
+            switch (value) {
+                case "1":
+                    return "1 star";
+                case "2":
+                    return "2 stars";
+                case "3":
+                    return "3 stars";
+                case "4":
+                    return "4 stars";
+                case "5":
+                    return "5 stars";
+                default:
+                    return "unknown"; }
+            
+        default:
+            return "unknown";    }
+}
+
+
 
     private VBox Scatter(Stage stage){
 
@@ -246,8 +454,8 @@ public class Main extends Application {
                         stage.show();
                         break;
                     case 3:
-                        VBox vBox = Scatter(stage);
-                        root.setCenter(vBox);
+                        VBox vBox2 = Histogram(stage);
+                        root.setCenter(vBox2);
                         stage.show();
                         break;
                     case 4:
@@ -255,7 +463,8 @@ public class Main extends Application {
                         stage.show();
                         break;
                     case 5:
-                        root.setCenter(startScreen);
+                        VBox vBox = Scatter(stage);
+                        root.setCenter(vBox);
                         stage.show();
                         break;
                     case 6:
@@ -273,7 +482,8 @@ public class Main extends Application {
                         stage.show();
                         break;
                     case 9:
-                        root.setCenter(startScreen);
+                        VBox vBox1 = PieChart(stage);
+                        root.setCenter(vBox1);
                         stage.show();
                         break;
                     case 10: 
@@ -321,6 +531,7 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+        
     }
 
     private static void swarmPlot(){
