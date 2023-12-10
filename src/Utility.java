@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class Utility {
     public static void main(String[] args) {
         Data bugData = new Data("data/bugData.csv");
@@ -134,5 +136,16 @@ public class Utility {
                 prediction[i] = DecisionStumpFactory.createSoloPrediction(data.data, i, data.studentIDs, data.columnNames[columnIndex], data.columnNames).prediction_value;
             }
         return prediction;
+    }
+
+    
+    public static <T extends Number> T max(List<T> list) {
+        T max = list.get(0);
+        for (T element : list) {
+            if (element.doubleValue() > max.doubleValue()) {
+                max = element;
+            }
+        }
+        return max;
     }
 }

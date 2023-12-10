@@ -6,9 +6,12 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
@@ -20,7 +23,6 @@ public class Draw1 extends Application  {
         stage.setWidth(800);
         stage.setHeight(600);
         stage.setTitle("JavaFX Scene Graph Demo");
-        
 
         Group root = new Group();
         BorderPane topPanel = new BorderPane();
@@ -79,16 +81,21 @@ public class Draw1 extends Application  {
         String[][] l = {{"1"}};
         String[][] m = {{"1"}};
 
+        Number[] q = {1, 2, 3};
+
         //LineChart<Integer, Integer> lineChart = LineChartFactory.createLineChart<Number, Number>(new NumberAxis(), new NumberAxis(), "", "", "", s, y, x);
         //BarChart<Number, Number> lineChar = BarChartFactory.createBarChartNumNum("title", "y", "x", s, a, b);
-        BarChart<String, Number> lineChart = BarAndHistogramChartFactory.createHistogramChartCatNum("title", "y", "x", s, a, t);
+        StackPane stackPane = new StackPane();
+        //ScatterChartFactory.createScatterChartNumNum(stackPane, "title", "y", "x", s, a, b);
         //BarChart<Number, String> lineCha = BarChartFactory.createBarChartCatNum("title", "y", "x", s, c, y);
         //BarChart<String, String> lineCh = BarChartFactory.createBarChartCatCat("title", "y", "x", s, m, l);
+        PieChart p = PieChartFactory.createPieChart("title", s, q);
 
         //.getChildren().add(lineChar);
-        root.getChildren().add(lineChart);
+        //root.getChildren().add(stackPane);
         //root.getChildren().add(lineCha);
         //root.getChildren().add(lineCh);
+        root.getChildren().add(p);
 
         Scene newScene = new Scene(root, Color.rgb(200, 248, 248));
         stage.setScene(newScene);
