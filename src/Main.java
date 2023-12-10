@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javafx.scene.Node;
 import java.util.stream.Collectors;
 
 import javax.xml.stream.EventFilter;
@@ -13,6 +14,7 @@ import javax.xml.stream.EventFilter;
 import java.awt.Desktop;
 import java.awt.Label;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -40,6 +42,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -69,64 +72,25 @@ public class Main extends Application {
     
 
 
-    /* Methods for visualizition */
 
 
-    //create frequency map for histogram
-    public static Map<String, Integer> raw_data_hist(String data_name, String course) {
-        Data right_data = new Data();
-        for (Data data : dataList) {
-            if (data.name.equals(data_name)) {
-                right_data = data;
-            }
-        }
-        int course_col_num = 0;
-        for (int i = 0; i < right_data.columnNames.length; i++) {
-            if (right_data.columnNames[i].equals(course)) {
-                course_col_num = i;
-            }
-        }
-        
-        Map<String, Integer> frequencyMap = new HashMap<>();
-        
-        for(int i =0; i<right_data.data.length; i++) {
-            for(int j = 0; j<right_data.data[i].length; j++) {
-                if(j==course_col_num)
-                    frequencyMap.put(String.valueOf(Math.round(right_data.data[i][j])), frequencyMap.getOrDefault(String.valueOf(Math.round(right_data.data[i][j])), 0) + 1);
-            }
-        }
-        return frequencyMap;
-    
+
+
+
+
+
+    /* private void refreshColumnList(FlowPane filters){ //has a problem when the same column names appear more than once - considers them as different.
+        ArrayList<String> temp = new ArrayList<String>();
+        for(Data data : dataList)
+            for(String s : data.columnNames)
+                temp.add(s);
+        columnList = FXCollections.observableArrayList(temp);
+        ChoiceBox<String> xAxis = new ChoiceBox<String>(columnList);
+        xAxis.setValue("------------");
+        ChoiceBox<String> yAxis = new ChoiceBox<String>(columnList);
+        yAxis.setValue("------------");
     }
-
-    // sorting LAL
-    public static List<String> LalSorted(Data right_data) {
-        int Lal_count_col_n = 0;
-        List<Integer> originalList = new ArrayList<>();
-        for(int k=0; k<right_data.data.length; k++) {
-            if(right_data.data[k].equals("Lal Count")) {
-                Lal_count_col_n = k;
-            }
-            }
-        
-        for(int i =0; i < right_data.data.length; i++) {
-            for(int j =0; j <right_data.data[i].length; j++) {
-                if(j==Lal_count_col_n) {
-                    originalList.add((int)right_data.data[i][j]);
-                }
-                    
-            }
-        }
-        Set<Integer> uniqueSet = new HashSet<>(originalList);
-        List<Integer> uniqueList = new ArrayList<>(uniqueSet);
-        List<Integer> sortedIntList = uniqueList.stream().sorted().collect(Collectors.toList());
-        List<String> stringList = new ArrayList<>();    
-        stringList = sortedIntList.stream()
-                                               .map(Object::toString)
-                                               .collect(Collectors.toList());
-        return stringList;
-    }
-
+ */
     private VBox PieChart(Stage stage) {
         VBox vBox = new VBox();
 
@@ -160,9 +124,9 @@ public class Main extends Application {
 
     }
     private void updatePieChart(String selectedData, PieChart PieChart, String selectedFilter) {
-        PieChart.getData().clear();
-        ArrayList<Integer> cum_students = MainFunc.cum(selectedData, selectedFilter);
-        int all_students_length = MainFunc.data_size(selectedData);
+        PieChart.getData().clear(); // Очистка предыдущих данных
+        ArrayList<Integer> cum_students = DataFunc.cum(selectedData, selectedFilter);
+        int all_students_length = DataFunc.data_size(selectedData);
         PieChart.Data slice1 = new PieChart.Data("Cum-Laude", cum_students.size());
         PieChart.Data slice2 = new PieChart.Data("Others", all_students_length-cum_students.size());
         PieChart.getData().add(slice1);
@@ -177,6 +141,8 @@ public class Main extends Application {
         ComboBox<String> filterComboBox = new ComboBox<>();
         filterComboBox.setItems(FXCollections.observableArrayList(MainFunc.all_courses));
         filterComboBox.getSelectionModel().selectFirst();
+        filterComboBox.setItems(FXCollections.observableArrayList(DataFunc.all_courses));
+        filterComboBox.getSelectionModel().selectFirst(); // Выбор первого элемента по умолчанию
 
 
         ComboBox<String> dataSelector = new ComboBox<>();
@@ -199,7 +165,7 @@ public class Main extends Application {
                 filterComboBox.setItems(FXCollections.observableArrayList(newItems));
                 filterComboBox.getSelectionModel().selectFirst();
             } else {
-                filterComboBox.setItems(FXCollections.observableArrayList(MainFunc.all_courses));
+                filterComboBox.setItems(FXCollections.observableArrayList(DataFunc.all_courses));
                 filterComboBox.getSelectionModel().selectFirst();
             }
             updateHistogram(dataSelector.getValue(), barChart, filterComboBox.getValue());
@@ -223,7 +189,8 @@ public class Main extends Application {
 
 
 
-        Map<String, Integer> freqMap = MainFunc.raw_data_hist(selectedData, selectedFilter);
+        //Getting data to draw hist
+        Map<String, Integer> freqMap = DataFunc.raw_data_hist(selectedData, selectedFilter);
         ArrayList<String> all_categories= new ArrayList<>();
         if (selectedData.equals("GraduateGrades")) {
             List<String> dataToAdd = Arrays.asList("6", "7", "8", "9", "10");
@@ -238,7 +205,7 @@ public class Main extends Application {
         } else if(selectedData.equals("StudentInfo"))
          {
             if(selectedFilter.equals("Lal Count")) {
-                List<String> dataToAdd3 = new ArrayList<>(MainFunc.LalSorted());
+                List<String> dataToAdd3 = new ArrayList<>(DataFunc.LalSorted(selectedData));
                 all_categories.addAll(dataToAdd3);
                 xAxis.setCategories(FXCollections.observableArrayList(dataToAdd3));
             } else {
@@ -262,15 +229,10 @@ public class Main extends Application {
         
     }
 
-        
-        
-
 
         barChart.getData().add(series);
         barChart.layout();
         
-
-
 
 }
 public static String get_value_names(String value, String course_name) {
@@ -331,12 +293,12 @@ public static String get_value_names(String value, String course_name) {
         VBox vBox = new VBox();
 
         ComboBox<String> filter1ComboBox = new ComboBox<>();
-        filter1ComboBox.setItems(FXCollections.observableArrayList(MainFunc.all_courses));
+        filter1ComboBox.setItems(FXCollections.observableArrayList(DataFunc.all_courses));
         filter1ComboBox.getSelectionModel().selectFirst(); // selecting default value
 
 
         ComboBox<String> filter2ComboBox= new ComboBox<>();
-        filter2ComboBox.setItems(FXCollections.observableArrayList(MainFunc.all_courses));
+        filter2ComboBox.setItems(FXCollections.observableArrayList(DataFunc.all_courses));
         filter2ComboBox.getSelectionModel().selectLast(); // selecting default value
 
         ComboBox<String> dataSelector = new ComboBox<>();
@@ -349,18 +311,17 @@ public static String get_value_names(String value, String course_name) {
         xAxis.setLabel(filter1ComboBox.getValue());
         yAxis.setLabel(filter2ComboBox.getValue());
         
-        ScatterChart<Number, Number> scatterChart = new ScatterChart<>(xAxis, yAxis);
+        CustomScatterChart scatterChart = new CustomScatterChart(xAxis, yAxis);
         
-        
-        
-        updateScatter(dataSelector.getValue(), scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue() );
+        updateScatter(dataSelector.getValue(), scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue());
 
 
         filter1ComboBox.setOnAction(e -> updateScatter(dataSelector.getValue(), scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue()));
         filter2ComboBox.setOnAction(e -> updateScatter(dataSelector.getValue(),scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue()));
-
+        dataSelector.setOnAction(e -> updateScatter(dataSelector.getValue(), scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue()));
+        
         vBox.getChildren().addAll(dataSelector, filter1ComboBox,filter2ComboBox, scatterChart);
-
+        
         return vBox;
     } 
     @Override
@@ -553,14 +514,72 @@ public static String get_value_names(String value, String course_name) {
         ScatterPlotChart scatterPlot = new ScatterPlotChart(scene);
         scatterPlot.start(stage);
     }
-    private void updateScatter(String selectedData, ScatterChart<Number, Number> ScatterChart, String selectedFilter1, String selectedFilter2) {
-        ScatterChart.getData().clear();
-        
-        XYChart.Series<Number, Number> series =  MainFunc.getScatter(selectedFilter1, selectedFilter2,  selectedData);
-        ScatterChart.getData().add(series);
-        ScatterChart.layout();
+    private void updateScatter(String selectedData, CustomScatterChart scatterChart, String selectedFilter1, String selectedFilter2) {
+        Data right_data = new Data();
+            for (Data data : dataList) {
+                if (data.name.equals(selectedData)) {
+                    right_data = data;
+            }
+            }
 
-    }
+        int course_col_num1 = 0;
+        int course_col_num2  = 0;
+              
+        for(int k =0; k<right_data.columnNames.length; k++) {
+            if(right_data.columnNames[k].equals(selectedFilter2)) {
+                course_col_num2= k;
+            }
+            if(right_data.columnNames[k].equals(selectedFilter1)) {
+                course_col_num1 = k;
+            }
+        }
+        scatterChart.getData().clear();
+        NumberAxis XAxis = (NumberAxis) scatterChart.getXAxis();
+        NumberAxis YAxis = (NumberAxis) scatterChart.getYAxis();
+        XAxis.autoRangingProperty().set(true);
+        YAxis.autoRangingProperty().set(true);
+        XAxis.setLabel(selectedFilter1);
+        YAxis.setLabel(selectedFilter2);
+    
+        scatterChart.setAnimated(false);
+
+        
+            
+        
+    
+        XYChart.Series<Number, Number> series =  DataFunc.getScatter(selectedFilter1, selectedFilter2,  selectedData);
+        
+        if(selectedData.equals("GraduateGrades")){
+            XAxis.autoRangingProperty().set(false);
+            XAxis.setUpperBound(11);
+            XAxis.setLowerBound(5);
+            XAxis.setTickUnit(1);
+
+            YAxis.autoRangingProperty().set(false);
+            YAxis.setUpperBound(11);
+            YAxis.setLowerBound(5);
+            YAxis.setTickUnit(1); 
+        } else {
+        XAxis.autoRangingProperty().set(false);
+        XAxis.setUpperBound(11);
+        XAxis.setLowerBound(4);
+        XAxis.setTickUnit(1);
+
+        YAxis.autoRangingProperty().set(false);
+        YAxis.setUpperBound(11);
+        YAxis.setLowerBound(4);
+        YAxis.setTickUnit(1); 
+        }
+        
+        double[] series_for_regress_line = Utility.linearRegressionLine(right_data, course_col_num1 , course_col_num2);
+        scatterChart.addLine(series_for_regress_line);
+        
+        scatterChart.getData().add(series);
+
+        scatterChart.layout(); 
+
+    
+}
 
     public static void main(String[] args) {
         

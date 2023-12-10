@@ -77,7 +77,9 @@ public class ScatterPlotChart extends Application {
         ScatterChart.getData().clear();
         
         XYChart.Series<Number, Number> series =  MainFunc.getScatter(selectedFilter1, selectedFilter2,  selectedData);
+
         ScatterChart.getData().add(series);
+        
         ScatterChart.layout();
 
     }

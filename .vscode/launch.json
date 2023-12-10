@@ -6,35 +6,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "DataColumn",
-            "request": "launch",
-            "mainClass": "DataColumn",
-            "projectName": "plots_b5ad89ff"
-        },
-        {
-            "type": "java",
-            "name": "DataElement",
-            "request": "launch",
-            "mainClass": "DataElement",
-            "projectName": "plots_b5ad89ff"
-        },
-        {
-            "type": "java",
-            "name": "test",
-            "request": "launch",
-            "mainClass": "test",
-            "projectName": "group19_project_51ab7fed"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "Main",
-            "projectName": "group19_project_51ab7fed",
-            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
-        },
-        {
-            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
@@ -77,6 +48,13 @@
         },
         {
             "type": "java",
+            "name": "ScatterPlotChart",
+            "request": "launch",
+            "mainClass": "ScatterPlotChart",
+            "projectName": "plots_b5ad89ff"
+        },
+        {
+            "type": "java",
             "name": "Utility",
             "request": "launch",
             "mainClass": "Utility",
@@ -87,6 +65,13 @@
             "name": "deleteEmptyrows",
             "request": "launch",
             "mainClass": "deleteEmptyrows",
+            "projectName": "plots_b5ad89ff"
+        },
+        {
+            "type": "java",
+            "name": "test",
+            "request": "launch",
+            "mainClass": "test",
             "projectName": "plots_b5ad89ff"
         }
     ]

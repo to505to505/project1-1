@@ -16,15 +16,17 @@ public class Utility {
     public static double[] linearRegressionLine(Data data, int columnIndex1, int columnIndex2) {
         double[] line = new double[2]; //[slope, y-intercept]
         double sumX = 0.0, sumY = 0.0, sumXY = 0.0, sumXX = 0.0;
+        int non_ng_students_count = 0;
         for (int i = 0; i < data.studentIDs.length; i++)
             if(data.data[i][columnIndex1] > 0 && data.data[i][columnIndex2] > 0){
+                non_ng_students_count++;
                 sumX += data.data[i][columnIndex1];
                 sumY += data.data[i][columnIndex2];
                 sumXY += data.data[i][columnIndex1] * data.data[i][columnIndex2];
                 sumXX += data.data[i][columnIndex1] * data.data[i][columnIndex1];
             }
-        line[0] = (data.studentIDs.length * sumXY - sumX * sumY) / (data.studentIDs.length * sumXX - sumX * sumX);
-        line[1] = (sumY - line[0] * sumX) / data.studentIDs.length;
+        line[0] = (non_ng_students_count * sumXY - sumX * sumY) / (non_ng_students_count * sumXX - sumX * sumX);
+        line[1] = (sumY - line[0] * sumX) / non_ng_students_count;
         return line;
     }
 
