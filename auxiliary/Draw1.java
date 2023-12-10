@@ -51,24 +51,44 @@ public class Draw1 extends Application  {
 
         root.getChildren().add(topPanel);
 
-        int[][] y = {
+        Number[][] y = {
             {1, 2, 3},
             {2, 3, 1},
             {3, 1, 2},
         };
 
-        int [][] x = {
+        Number [][] x = {
             {1, 2, 3},
             {1, 2, 3},
             {1, 2, 3}
         };
 
-        String[] s = {"", "", ""};
+        Number[][] a = {{1, 2, 3}};
+        Number[][] b = {{2, 3, 1}};
+        String[][] c = {
+            {"a", "b,", "c"},
+            {"a", "b,", "c"},
+            {"a", "b,", "d"}
+        };
 
-        LineChart<Integer, Integer> lineChart = LineChartFactory.createLineChart<Integer, Integer>(new NumberAxis(), new NumberAxis(), "", "", "", s, y, x);
+        String[] s = {"1", "2", "3"};
+        String[][] t = {{"1", "2", "3"}};
 
-        root.getChildren().add(studentsPerGrade);
-        //root.getChildren().add(drawPanel);
+        String[][] k = {{"1", "2", "3"}, {"1", "2", "3"}, {"1", "2", "3"}};
+
+        String[][] l = {{"1"}};
+        String[][] m = {{"1"}};
+
+        //LineChart<Integer, Integer> lineChart = LineChartFactory.createLineChart<Number, Number>(new NumberAxis(), new NumberAxis(), "", "", "", s, y, x);
+        //BarChart<Number, Number> lineChar = BarChartFactory.createBarChartNumNum("title", "y", "x", s, a, b);
+        BarChart<String, Number> lineChart = BarAndHistogramChartFactory.createHistogramChartCatNum("title", "y", "x", s, a, t);
+        //BarChart<Number, String> lineCha = BarChartFactory.createBarChartCatNum("title", "y", "x", s, c, y);
+        //BarChart<String, String> lineCh = BarChartFactory.createBarChartCatCat("title", "y", "x", s, m, l);
+
+        //.getChildren().add(lineChar);
+        root.getChildren().add(lineChart);
+        //root.getChildren().add(lineCha);
+        //root.getChildren().add(lineCh);
 
         Scene newScene = new Scene(root, Color.rgb(200, 248, 248));
         stage.setScene(newScene);

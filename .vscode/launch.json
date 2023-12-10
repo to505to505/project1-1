@@ -6,6 +6,14 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Draw1",
+            "request": "launch",
+            "mainClass": "Draw1",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
