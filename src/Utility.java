@@ -1,6 +1,6 @@
 import java.util.List;
 
-public class Utility {
+public abstract class Utility {
     public static void main(String[] args) {
         Data bugData = new Data("data/bugData.csv");
         printPearsonCorrelationMatrix(bugData, pearsonCorrelationMatrix(bugData));

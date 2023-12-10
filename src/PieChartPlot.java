@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class PieChartPlot  extends Application {
+public abstract class PieChartPlot  extends Application {
     public Scene previous_scene;
 
     public PieChartPlot(Scene scene) {

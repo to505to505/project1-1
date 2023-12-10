@@ -83,18 +83,20 @@ public class Draw1 extends Application  {
 
         Number[] q = {1, 2, 3};
 
-        //LineChart<Integer, Integer> lineChart = LineChartFactory.createLineChart<Number, Number>(new NumberAxis(), new NumberAxis(), "", "", "", s, y, x);
+        LineChart<Number, Number> lineChart = LineChartFactory.createLineChart(new NumberAxis(), new NumberAxis(), "", "", "", s, y, x);
         //BarChart<Number, Number> lineChar = BarChartFactory.createBarChartNumNum("title", "y", "x", s, a, b);
         StackPane stackPane = new StackPane();
         //ScatterChartFactory.createScatterChartNumNum(stackPane, "title", "y", "x", s, a, b);
-        //BarChart<Number, String> lineCha = BarChartFactory.createBarChartCatNum("title", "y", "x", s, c, y);
-        //BarChart<String, String> lineCh = BarChartFactory.createBarChartCatCat("title", "y", "x", s, m, l);
+        ScatterChart<Number, Number> scatterChart = ScatterChartFactory.createScatterChart(new NumberAxis(), new NumberAxis(), "title", "x", "y", s, x, y);
+        BarChart<Number, String> lineCha = BarAndHistogramChartFactory.createBarChart(new NumberAxis(), new CategoryAxis(),"title", "x", "y", s, y, c);
+        BarChart<String,Number> lineCh = BarAndHistogramChartFactory.createHistogram(new CategoryAxis(), new NumberAxis(),"title", "y", "x", s, k, y);
         PieChart p = PieChartFactory.createPieChart("title", s, q);
 
-        //.getChildren().add(lineChar);
+        //root.getChildren().add(lineChart);
         //root.getChildren().add(stackPane);
         //root.getChildren().add(lineCha);
         //root.getChildren().add(lineCh);
+        //root.getChildren().add(scatterChart);
         root.getChildren().add(p);
 
         Scene newScene = new Scene(root, Color.rgb(200, 248, 248));

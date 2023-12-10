@@ -12,7 +12,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
-public class ScatterChartFactory {
+public abstract class ScatterChartFactory {
     /**
      * 
      * @param <X>
@@ -22,12 +22,12 @@ public class ScatterChartFactory {
      * @param title
      * @param yLabel
      * @param xLabel
-     * @param xSeriesNames
+     * @param seriesNames
      * @param yArrays
      * @param xArrays
      * @return
      */
-    public static <X, Y> ScatterChart<X,Y> createScatterChart(Axis<X> xAxis, Axis<Y> yAxis, String title, String yLabel, String xLabel, String[] xSeriesNames, Y[][] yArrays, X[][] xArrays){ //we'll just assume the values play nicely with each other
+    public static <X,Y> ScatterChart<X,Y> createScatterChart(Axis<X> xAxis, Axis<Y> yAxis, String title, String xLabel, String yLabel, String[] seriesNames, X[][] xArrays, Y[][] yArrays){ //we'll just assume the values play nicely with each other
         //if(X )
         //xAxis = new NumberAxis();
         //yAxis = new NumberAxis();
@@ -49,7 +49,7 @@ public class ScatterChartFactory {
         //Create Series
         for(int i = 0; i < xArrays.length; i++){
             XYChart.Series<X,Y> series = new XYChart.Series<>();
-            series.setName(xSeriesNames[i]);
+            series.setName(seriesNames[i]);
             for(int j = 0; j < xArrays[i].length; j++)
                 series.getData().add(new XYChart.Data<>(xArrays[i][j], yArrays[i][j]));
             scatterChart.getData().add(series);
@@ -65,12 +65,12 @@ public class ScatterChartFactory {
      * @param title
      * @param yLabel
      * @param xLabel
-     * @param xSeriesNames
+     * @param seriesNames
      * @param yArrays
      * @param xArrays
      * @return
      */
-    public static ScatterChart<Number, Number> createScatterChartNumNum(String title, String yLabel, String xLabel, String[] xSeriesNames, Number[][] yArrays, Number[][] xArrays){ //we'll just assume the values play nicely with each other
+    public static ScatterChart<Number, Number> createScatterChartNumNum(String title, String xLabel, String yLabel, String[] seriesNames, Number[][] xArrays, Number[][] yArrays){ //we'll just assume the values play nicely with each other
         NumberAxis xAxis = new NumberAxis();
         NumberAxis yAxis = new NumberAxis();
 
@@ -91,7 +91,7 @@ public class ScatterChartFactory {
         //Create Series
         for(int i = 0; i < xArrays.length; i++){
             XYChart.Series<Number,Number> series = new XYChart.Series<>();
-            series.setName(xSeriesNames[i]);
+            series.setName(seriesNames[i]);
             for(int j = 0; j < xArrays[i].length; j++)
                 series.getData().add(new XYChart.Data<>(xArrays[i][j], yArrays[i][j]));
             scatterChart.getData().add(series);
@@ -113,23 +113,19 @@ public class ScatterChartFactory {
     }
 
 
-        /**
-     * 
+    /**
+     * Doesn't work
      * @param <X>
      * @param <Y>
      * @param title
      * @param yLabel
      * @param xLabel
-     * @param xSeriesNames
+     * @param seriesNames
      * @param yArrays
      * @param xArrays
      * @return
      */
-    public static void createScatterChartNumNum(StackPane stackPane, String title, String yLabel, String xLabel, String[] xSeriesNames, Number[][] yArrays, Number[][] xArrays){ //we'll just assume the values play nicely with each other
-        
-        
-
-        
+    public static void createRegressionScatterChartNumNum(StackPane stackPane, String title, String xLabel, String yLabel, String[] seriesNames, Number[][] xArrays, Number[][] yArrays){ //we'll just assume the values play nicely with each other
 
         NumberAxis xAxis = new NumberAxis();
         NumberAxis yAxis = new NumberAxis();
@@ -159,7 +155,7 @@ public class ScatterChartFactory {
         //Create Series
         for(int i = 0; i < xArrays.length; i++){
             XYChart.Series<Number,Number> series = new XYChart.Series<>();
-            series.setName(xSeriesNames[i]);
+            series.setName(seriesNames[i]);
             for(int j = 0; j < xArrays[i].length; j++)
                 series.getData().add(new XYChart.Data<>(xArrays[i][j], yArrays[i][j]));
             scatterChart.getData().add(series);

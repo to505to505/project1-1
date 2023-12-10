@@ -5,7 +5,7 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.layout.Border;
 import javafx.scene.paint.Color;
 
-public class PieChartFactory {
+public abstract class PieChartFactory {
     public static PieChart createPieChart(String title, String[] catArray, Number[] xArray) {
         
         if(catArray.length != xArray.length)

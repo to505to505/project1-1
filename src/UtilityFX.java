@@ -1,7 +1,4 @@
-import java.io.File;
-import java.io.IOException;
-
-public class UtilityFX {
+public abstract class UtilityFX {
     public static double[] linearRegressionLine(Number[] x, Number[] y) {
         double[] line = new double[2]; //[slope, y-intercept]
         double sumX = 0.0, sumY = 0.0, sumXY = 0.0, sumXX = 0.0;
