@@ -92,7 +92,7 @@ public class Main extends Application {
         for(int i =0; i<right_data.data.length; i++) {
             for(int j = 0; j<right_data.data[i].length; j++) {
                 if(j==course_col_num)
-                    frequencyMap.put(String.valueOf(Math.round(right_data.data[i][j])), frequencyMap.getOrDefault(String.valueOf(Math.round(right_data.data[i][j])), 0) + 1);  
+                    frequencyMap.put(String.valueOf(Math.round(right_data.data[i][j])), frequencyMap.getOrDefault(String.valueOf(Math.round(right_data.data[i][j])), 0) + 1);
             }
         }
         return frequencyMap;
