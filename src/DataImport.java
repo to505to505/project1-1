@@ -1,6 +1,7 @@
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,23 +24,38 @@ public class DataImport {
      * @param dataMenu
      */
     public static void dataInit(Menu dataMenu){
+        ArrayList<String> fileNames = new ArrayList<String>();
+        
         ///Statically import data
         Data data_current = new Data("src/data/CurrentGrades.csv");
-        data_current.name = "CurrentGrades";
+        data_current.name = "Current Grades";
         Main.dataList.add(data_current);
-        Data data_graduate = new Data("src/data/bugData.csv");
-        data_graduate.name = "GraduateGrades";
+        fileNames.add(data_current.name);
+
+        Data data_graduate = new Data("src/data/GraduateGrades.csv");
+        data_graduate.name = "Graduate Grades";
         Main.dataList.add(data_graduate);
+        fileNames.add(data_graduate.name);
+
+        Data data_aggregate = new Data("src/data/bugData.csv");
+        data_aggregate.name = "Aggregate Grades";
+        Main.dataList.add(data_aggregate);
+        fileNames.add(data_aggregate.name);
+        
         Data data_student_info = new Data("src/data/StudentInfo.csv");
-        data_student_info.name = "StudentInfo";
+        data_student_info.name = "Student Info";
         Main.dataList.add(data_student_info);
+        fileNames.add(data_student_info.name);
+
+        Main.fileList = FXCollections.observableArrayList(fileNames);
         
         ///Add data to Data Menu
         MenuItem cDataMenu = new MenuItem("Current Grades");
         MenuItem gDataMenu = new MenuItem("Graduate Grades");
+        MenuItem aDataMenu = new MenuItem("Aggregate Grades");
         MenuItem iDataMenu = new MenuItem("Student Info");
 
-        dataMenu.getItems().addAll(cDataMenu, gDataMenu, iDataMenu);
+        dataMenu.getItems().addAll(cDataMenu, gDataMenu, aDataMenu, iDataMenu);
 
 
     }

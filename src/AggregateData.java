@@ -11,6 +11,7 @@ public class AggregateData extends Data {
 
     public String[] infoColumnNames;
     public double[][] infoData;
+    public String[][] infoNotation;
 
     /**
      * Constructor reading files of tables with matching student ID columns (the order of student IDs).
@@ -45,7 +46,8 @@ public class AggregateData extends Data {
             
             lineScanner.close(); //close line scanner
             
-            
+            //create infoNotation with the role of category dictionary
+            //infoNotation = new String[studentIDs.length][infoColumnNames.length];
 
             /// write data to infoData
             infoData = new double[super.studentIDs.length][infoColumnNames.length];

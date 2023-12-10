@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.xml.stream.EventFilter;
+
 import java.awt.Desktop;
 import java.awt.Label;
 import javafx.application.Application;
@@ -58,6 +61,7 @@ public class Main extends Application {
     public static int dataCount = 0; //used to count Data objects
     public static int removeCount = 1; //number of removed Data objects offset by 1
     public static ArrayList<Data> dataList = new ArrayList<Data>();
+    public static ObservableList<String> fileList;
     public static ObservableList<String> columnList;
 
     final static int BUTTON_COUNT = 10;
@@ -394,27 +398,56 @@ public static String get_value_names(String value, String course_name) {
 
         VBox startScreen = new VBox();
         startScreen.setStyle("-fx-background-color: #fff5ee");
+        root.setCenter(startScreen);
 
         ///Sandbox
         BorderPane sandbox = new BorderPane();
         sandbox.setStyle("-fx-background-color: #fff5ee");
         //sandbox.setAlignment(graph, Pos.CENTER);
-
-
+ 
         //Sandbox Filter Bar FlowPane
         FlowPane filters = new FlowPane(10, 10);
-        filters.setStyle("-fx-background-color: #554222");
-        //Label xAxisLab = new Label("X Axis: ");
+        filters.setStyle("-fx-background-color: #997744");
 
+        //X-Axis Data Selection
         VBox xAxisBox = new VBox();
-        ComboBox<String> xAxisFile = new ComboBox<String>();
-        ComboBox<String> xAxiss = new ComboBox<String>();
-        xAxiss.setValue("----------");
-        //Label yAxisLab = new Label("X Axis: ");
-        ComboBox<String> yAxiss = new ComboBox<String>();
-        yAxiss.setValue("----------");
-        filters.getChildren().addAll(xAxiss, yAxiss);
-        refreshColumnList(filters);
+        Text xCol = new Text("X-Axis Column:");
+        ComboBox<String> xAxisCol = new ComboBox<String>();
+        xAxisCol.setValue("----------");
+        Text xFile = new Text("X-Axis File:");
+        ComboBox<String> xAxisFile = new ComboBox<String>(fileList);
+        xAxisFile.setValue("----------");
+        xAxisFile.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e){
+                for(Data d: dataList)
+                    if(d.name.equals(xAxisFile.getValue())){
+                        xAxisCol.getItems().clear();
+                        xAxisCol.getItems().addAll(d.columnNames);
+                    }
+            }
+        });
+        xAxisBox.getChildren().addAll(xFile, xAxisFile, xCol, xAxisCol);
+        filters.getChildren().add(xAxisBox);
+        //Y-Axis Data Selection
+        VBox yAxisBox = new VBox();
+        Text yCol = new Text("Y-Axis Column:");
+        ComboBox<String> yAxisCol = new ComboBox<String>();
+        yAxisCol.setValue("----------");
+        Text yFile = new Text("Y-Axis File:");
+        ComboBox<String> yAxisFile = new ComboBox<String>(fileList);
+        yAxisFile.setValue("----------");
+        yAxisFile.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e){
+                for(Data d: dataList)
+                    if(d.name.equals(yAxisFile.getValue())){
+                        yAxisCol.getItems().clear();
+                        yAxisCol.getItems().addAll(d.columnNames);
+                    }
+            }
+        });
+        yAxisBox.getChildren().addAll(yFile, yAxisFile, yCol, yAxisCol);
+        filters.getChildren().add(yAxisBox);
+        //refreshColumnList(filters);
 
         sandbox.setTop(filters);
         ///END SandBox
@@ -496,7 +529,7 @@ public static String get_value_names(String value, String course_name) {
                     if(j!=i) buttons[j].setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
             }
         };
-        for(Button b: buttons) b.setOnAction(sideMenuHandler);
+        for(Button b : buttons) b.setOnAction(sideMenuHandler);
         sideMenu.getChildren().addAll(buttons);
         //add Side Menu to root
         root.setLeft(sideMenu);
@@ -530,8 +563,8 @@ public static String get_value_names(String value, String course_name) {
     }
 
     public static void main(String[] args) {
-        launch(args);
         
+        launch(args);
     }
 
     private static void swarmPlot(){
