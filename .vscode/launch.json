@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "DataColumn",
+            "request": "launch",
+            "mainClass": "DataColumn",
+            "projectName": "plots_b5ad89ff"
+        },
+        {
+            "type": "java",
+            "name": "DataElement",
+            "request": "launch",
+            "mainClass": "DataElement",
+            "projectName": "plots_b5ad89ff"
+        },
+        {
+            "type": "java",
             "name": "test",
             "request": "launch",
             "mainClass": "test",
