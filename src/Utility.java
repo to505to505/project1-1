@@ -1,4 +1,6 @@
-public class Utility {
+import java.util.List;
+
+public abstract class Utility {
     public static void main(String[] args) {
         Data bugData = new Data("data/bugData.csv");
         printPearsonCorrelationMatrix(bugData, pearsonCorrelationMatrix(bugData));
@@ -151,6 +153,15 @@ public class Utility {
         summ = dot / (Math.sqrt(normx * normy));
         return summ;
     }
+    public static <T extends Number> T max(List<T> list) {
+        T max = list.get(0);
+        for (T element : list) {
+            if (element.doubleValue() > max.doubleValue()) {
+                max = element;
+            }
+        }
+        return max;
+    }
     public static double euclidian(double[][] data, int j, int k) {
         double summ = 0;
         for (int i = 0; i < data.length; i++) {
@@ -158,5 +169,16 @@ public class Utility {
         }
         summ = Math.sqrt(summ);
         return summ;
+    }
+
+    
+    public static <T extends Number> T max(List<T> list) {
+        T max = list.get(0);
+        for (T element : list) {
+            if (element.doubleValue() > max.doubleValue()) {
+                max = element;
+            }
+        }
+        return max;
     }
 }

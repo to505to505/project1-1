@@ -99,6 +99,13 @@
         },
         {
             "type": "java",
+            "name": "ScatterPlotChart",
+            "request": "launch",
+            "mainClass": "ScatterPlotChart",
+            "projectName": "plots_b5ad89ff"
+        },
+        {
+            "type": "java",
             "name": "Utility",
             "request": "launch",
             "mainClass": "Utility",
@@ -109,6 +116,13 @@
             "name": "deleteEmptyrows",
             "request": "launch",
             "mainClass": "deleteEmptyrows",
+            "projectName": "plots_b5ad89ff"
+        },
+        {
+            "type": "java",
+            "name": "test",
+            "request": "launch",
+            "mainClass": "test",
             "projectName": "plots_b5ad89ff"
         }
     ]
