@@ -25,7 +25,7 @@ public class DC<T> {
             c.add(e);
         c.get(3).setValue(10L);
         c.print();
-        System.out.println(c.get(3).getValue().getClass());
+        System.out.println(c.get(3).getValue(c.type).getClass());
         }
 
     public DC(String name, Class<T> type) {

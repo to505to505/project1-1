@@ -6,80 +6,117 @@
     "configurations": [
         {
             "type": "java",
-            "name": "test2",
-            "request": "launch",
-            "mainClass": "test2",
-            "projectName": "group19_project_51ab7fed"
-        },
-        {
-            "type": "java",
-            "name": "SwarmTest",
-            "request": "launch",
-            "mainClass": "SwarmTest",
-            "projectName": "group19_project_51ab7fed",
-            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
-        },
-        {
-            "type": "java",
-            "name": "test3",
-            "request": "launch",
-            "mainClass": "test3",
-            "projectName": "group19_project_51ab7fed"
-        },
-        {
-            "type": "java",
-            "name": "DataColumn",
-            "request": "launch",
-            "mainClass": "DataColumn",
-            "projectName": "plots_b5ad89ff"
-        },
-        {
-            "type": "java",
-            "name": "DataElement",
-            "request": "launch",
-            "mainClass": "DataElement",
-            "projectName": "plots_b5ad89ff"
-        },
-        {
-            "type": "java",
-            "name": "test",
-            "request": "launch",
-            "mainClass": "test",
-            "projectName": "group19_project_51ab7fed"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "Main",
-            "projectName": "group19_project_51ab7fed",
-            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
-        },
-        {
-            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
         },
         {
             "type": "java",
-            "name": "Data",
+            "name": "ElegibleStudents",
             "request": "launch",
-            "mainClass": "Data",
-            "projectName": "plots_b5ad89ff"
+            "mainClass": "auxiliary.ElegibleStudents",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        },
+        {
+            "type": "java",
+            "name": "ExamHistogram",
+            "request": "launch",
+            "mainClass": "auxiliary.ExamHistogram",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        },
+        {
+            "type": "java",
+            "name": "GradPrediction",
+            "request": "launch",
+            "mainClass": "auxiliary.GradPrediction",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        },
+        {
+            "type": "java",
+            "name": "OrderExam",
+            "request": "launch",
+            "mainClass": "auxiliary.OrderExam",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        },
+        {
+            "type": "java",
+            "name": "TestDataFilters",
+            "request": "launch",
+            "mainClass": "auxiliary.TestDataFilters",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
             "name": "HistogramChart",
             "request": "launch",
-            "mainClass": "HistogramChart",
+            "mainClass": "charts.HistogramChart",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        },
+        {
+            "type": "java",
+            "name": "PieChartPlot",
+            "request": "launch",
+            "mainClass": "charts.PieChartPlot",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        },
+        {
+            "type": "java",
+            "name": "ScatterPlotChart",
+            "request": "launch",
+            "mainClass": "charts.ScatterPlotChart",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        },
+        {
+            "type": "java",
+            "name": "DC",
+            "request": "launch",
+            "mainClass": "data.DC",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        },
+        {
+            "type": "java",
+            "name": "DE",
+            "request": "launch",
+            "mainClass": "data.DE",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        },
+        {
+            "type": "java",
+            "name": "Data",
+            "request": "launch",
+            "mainClass": "data.Data",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        },
+        {
+            "type": "java",
+            "name": "Cell",
+            "request": "launch",
+            "mainClass": "data.deprecated.Cell",
+            "projectName": "plots_b5ad89ff","vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        },
+        {
+            "type": "java",
+            "name": "DataColumn",
+            "request": "launch",
+            "mainClass": "data.deprecated.DataColumn",
             "projectName": "plots_b5ad89ff"
         },
         {
             "type": "java",
             "name": "Main",
             "request": "launch",
-            "mainClass": "Main",
+            "mainClass": "main.Main",
             "projectName": "plots_b5ad89ff",
             "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
@@ -87,42 +124,54 @@
             "type": "java",
             "name": "MainFunc",
             "request": "launch",
-            "mainClass": "MainFunc",
-            "projectName": "plots_b5ad89ff"
+            "mainClass": "main.MainFunc",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
-            "name": "PieChartPlot",
+            "name": "Draw1",
             "request": "launch",
-            "mainClass": "PieChartPlot",
-            "projectName": "plots_b5ad89ff"
+            "mainClass": "test.Draw1",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
-            "name": "ScatterPlotChart",
+            "name": "SwarmTest",
             "request": "launch",
-            "mainClass": "ScatterPlotChart",
-            "projectName": "plots_b5ad89ff"
+            "mainClass": "test.SwarmTest",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        },
+        {
+            "type": "java",
+            "name": "test2",
+            "request": "launch",
+            "mainClass": "test.test2",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        },
+        {
+            "type": "java",
+            "name": "test3",
+            "request": "launch",
+            "mainClass": "test.test3",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
             "name": "Utility",
             "request": "launch",
-            "mainClass": "Utility",
+            "mainClass": "utility.Utility",
             "projectName": "plots_b5ad89ff"
         },
         {
             "type": "java",
             "name": "deleteEmptyrows",
             "request": "launch",
-            "mainClass": "deleteEmptyrows",
-            "projectName": "plots_b5ad89ff"
-        },
-        {
-            "type": "java",
-            "name": "test",
-            "request": "launch",
-            "mainClass": "test",
+            "mainClass": "utility.deleteEmptyrows",
             "projectName": "plots_b5ad89ff"
         }
     ]
