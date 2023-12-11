@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public class decisionStumpCategorical implements DecisionStump  {
+public class DSCat implements DS  {
     private double[][] data;
     private String course_name;
     private String property_name;
@@ -14,10 +14,12 @@ public class decisionStumpCategorical implements DecisionStump  {
     public HashMap<Object, HashMap<String, Double>> prediction_dict;
     public double total_variance = 0;
     public HashMap<String, HashMap<String, Object>> prediction_dict_plots;
+    public HashMap<Double, ArrayList<Integer>> users_for_plots;
 
 
 
-    public decisionStumpCategorical(double[][] data, String course_name, String property_name, String[]courses_names, int course_col_num, int property_col_num ) {
+
+    public  DSCat(double[][] data, String course_name, String property_name, String[]courses_names, int course_col_num, int property_col_num ) {
 
         //Initializing variables needed for any class methods
         this.data = data;
@@ -29,9 +31,13 @@ public class decisionStumpCategorical implements DecisionStump  {
 
 
 
+
         /* Predicting  */
         predict();
 
+    }
+    public HashMap<Double, ArrayList<Integer>> get_users_for_plots(){
+        return users_for_plots;
     }
 
     public HashMap<Object, HashMap<String, Double>> get_prediction_dict() {
@@ -71,15 +77,28 @@ public class decisionStumpCategorical implements DecisionStump  {
         Set<Double> uniqueSet = new HashSet<>(Arrays.asList(propertyArrayobject));
         Double[] uniqueArr = uniqueSet.toArray(new Double[0]);
         int total_count = total_counter(data, course_col_num);
+        ArrayList<Integer> ids_for_plots = new ArrayList<Integer>();
+        ArrayList<Integer> array_of_users_for_plots = new ArrayList<Integer>();
+        users_for_plots = new HashMap<>();
         for (Double value : uniqueArr) {
             ArrayList<Integer> index_array = new ArrayList<Integer>();
+            ids_for_plots = new ArrayList<Integer>();
             for (int i = 0; i < data.length; i++) {
 
                 if (data[i][property_col_num] == value) {
                     index_array.add(i);
+                    ids_for_plots.add(i);
+
                 }
 
             }
+            array_of_users_for_plots = new ArrayList<>();
+            for(Integer ID: ids_for_plots) {
+                array_of_users_for_plots.add((int) data[ID][course_col_num]);
+                
+            }
+            
+            users_for_plots.put(value, array_of_users_for_plots);
 
             double mean = mean_calc(data, index_array, course_col_num);
             int count = count_calc(data, index_array, course_col_num);
@@ -164,7 +183,7 @@ public class decisionStumpCategorical implements DecisionStump  {
                     case 2:
                         return "lobi"; 
                     default:
-                        return "unknown";
+                        return "";
     
                 }
             case "Hurni Level":
@@ -180,7 +199,7 @@ public class decisionStumpCategorical implements DecisionStump  {
                     case 4:
                         return "full";
                     default:
-                        return "unknown";
+                        return "";
    
                 
                 }
@@ -198,12 +217,14 @@ public class decisionStumpCategorical implements DecisionStump  {
                     case 5:
                         return "5 stars";
                     default:
-                        return "unknown"; }
+                        return ""; }
                 
             default:
-                return "unknown";    }
+                return "";    }
 }
 }
 
 
         
+
+

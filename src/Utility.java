@@ -72,7 +72,7 @@ public class Utility {
         for(int i = 0; i < data.studentIDs.length; i++)
             if(data.data[i][columnIndex1] > 0 && data.data[i][columnIndex2] > 0){
                 md1 = data.data[i][columnIndex1] - mean1;
-                md2 = data.data[i][columnIndex1] - mean2;
+                md2 = data.data[i][columnIndex2] - mean2;
                 meanDifProd += md1*md2;
                 meanDifSq1 += md1*md1;
                 meanDifSq2 += md2*md2;
@@ -134,5 +134,29 @@ public class Utility {
                 prediction[i] = DecisionStumpFactory.createSoloPrediction(data.data, i, data.studentIDs, data.columnNames[columnIndex], data.columnNames).prediction_value;
             }
         return prediction;
+    }
+    
+    public static double cosine(double[][] data, int j, int k) {
+        double summ = 0;
+        double dot = 0;
+        double normx = 0;
+        double normy = 0;
+        for (int i = 0; i < data.length; i++) {
+            
+            dot += data[i][j] * data[i][k];
+            normx += Math.pow(data[i][j], 2);
+            normy += Math.pow(data[i][k], 2);
+            
+        }
+        summ = dot / (Math.sqrt(normx * normy));
+        return summ;
+    }
+    public static double euclidian(double[][] data, int j, int k) {
+        double summ = 0;
+        for (int i = 0; i < data.length; i++) {
+            summ += Math.pow((data[i][j] - data[i][k]), 2);
+        }
+        summ = Math.sqrt(summ);
+        return summ;
     }
 }

@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class DecisionStumpFactory {
     
-    public static DecisionStump createDecisionStumpBasic(double[][] data, String course_name, String property_name, String[] courses_names ) {
+    public static DS createDecisionStumpBasic(double[][] data, String course_name, String property_name, String[] courses_names ) {
         int property_col_num = 0;
         int course_col_num = 0;
 
@@ -35,9 +35,9 @@ public class DecisionStumpFactory {
 
         /* Creating class */
         if(is_categorical) {
-            return new decisionStumpCategorical(data, course_name, property_name, courses_names, course_col_num, property_col_num);
+            return new DSCat(data, course_name, property_name, courses_names, course_col_num, property_col_num);
         } else {
-            return new decisionStumpNumer(data, course_name, property_name, courses_names, course_col_num, property_col_num);
+            return new DSNum(data, course_name, property_name, courses_names, course_col_num, property_col_num);
         }
    
 }
@@ -54,8 +54,8 @@ public class DecisionStumpFactory {
 
         ArrayList<String> forbidden_courses = new ArrayList<>();
         int student_index = get_student_index(student_id, students_ids);
-        DecisionStump bestDecisionStump = find_best_split(data, student_id, student_index, students_ids, course_name, courses_names, forbidden_courses);
-        ArrayList<DecisionStump> used_splits = new ArrayList<>();
+        DS bestDecisionStump = find_best_split(data, student_id, student_index, students_ids, course_name, courses_names, forbidden_courses);
+        ArrayList<DS> used_splits = new ArrayList<>();
         used_splits.add(bestDecisionStump);
         Prediction prediction_for_1 = new Prediction(data, used_splits, student_index, student_id);
         return prediction_for_1;
@@ -73,10 +73,10 @@ public class DecisionStumpFactory {
         }
 
         ArrayList<String> forbidden_courses = new ArrayList<>();
-        ArrayList<DecisionStump> used_splits = new ArrayList<>();
+        ArrayList<DS> used_splits = new ArrayList<>();
         int student_index = get_student_index(student_id, students_ids);
         for(int i =0; i<properties_amount; i++) {
-            DecisionStump bestDecisionStump = find_best_split(data, student_id, student_index, students_ids, course_name, courses_names, forbidden_courses);
+            DS bestDecisionStump = find_best_split(data, student_id, student_index, students_ids, course_name, courses_names, forbidden_courses);
             String forbidden_course = bestDecisionStump.get_property_name();
             forbidden_courses.add(forbidden_course);
             used_splits.add(bestDecisionStump);
@@ -86,11 +86,11 @@ public class DecisionStumpFactory {
         return multiple_prediction;
 
     }
-    private static DecisionStump find_best_split(double[][] data, int student_id, int student_index, int[] students_ids, String course_name, String[] courses_names, ArrayList<String> forbidden_courses) {
+    private static DS find_best_split(double[][] data, int student_id, int student_index, int[] students_ids, String course_name, String[] courses_names, ArrayList<String> forbidden_courses) {
         
         // setting up variables to save the best decision stump
         double best_variance = 100.0;
-        DecisionStump bestDecisionStump = null;
+        DS bestDecisionStump = null;
 
     
 
@@ -108,7 +108,7 @@ public class DecisionStumpFactory {
 
             continue;
             } else {
-                DecisionStump decisionStump = DecisionStumpFactory.createDecisionStumpBasic(data, course_name, item, courses_names);
+                DS decisionStump = DecisionStumpFactory.createDecisionStumpBasic(data, course_name, item, courses_names);
                 double variance_of_iteration = decisionStump.get_total_variance(); 
                 if(variance_of_iteration<best_variance) {
                     best_variance = variance_of_iteration;

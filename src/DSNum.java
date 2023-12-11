@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class decisionStumpNumer implements DecisionStump {
+public class DSNum implements DS {
     private double[][] data;
     private String course_name;
     private String property_name;
@@ -13,8 +13,9 @@ public class decisionStumpNumer implements DecisionStump {
     public double total_variance = 0;
     public double boundry_value;
     public HashMap<String, HashMap<String, Object>> prediction_dict_plots;
+    public HashMap<Double, ArrayList<Integer>> users_for_plots;
 
-    public decisionStumpNumer(double[][] data, String course_name, String property_name, String[]courses_names, int course_col_num, int property_col_num ) {
+    public DSNum(double[][] data, String course_name, String property_name, String[]courses_names, int course_col_num, int property_col_num ) {
         this.data = data;
         this.course_name = course_name;
         this.property_name = property_name;
@@ -25,6 +26,9 @@ public class decisionStumpNumer implements DecisionStump {
         /* Predicting  */
         predict();
 
+    }
+    public HashMap<Double, ArrayList<Integer>> get_users_for_plots(){
+        return users_for_plots;
     }
     public HashMap<Object, HashMap<String, Double>> get_prediction_dict(){
         return prediction_dict;
@@ -147,7 +151,42 @@ public class decisionStumpNumer implements DecisionStump {
                 minTotalVariance = totalVariancePerBoundryValue[o][0];
                 minTotalVarianceIndex = o;
             }
+        
         boundry_value = totalVariancePerBoundryValue[minTotalVarianceIndex][1];
+        ArrayList<Integer> upper1 = new ArrayList<Integer>();
+        ArrayList<Integer> lower1 = new ArrayList<Integer>();
+        ArrayList<Integer> queue1 = new ArrayList<Integer>();
+        int gradeCount1 = 0; 
+        for (int j = 0; j < data.length; j++) { // adding all data to the upper array
+            if (data[j][course_col_num] > 0) {
+                upper1.add(j);
+                gradeCount1++;
+            }
+        }
+        for (Integer index : upper1) {
+                    if (data[index][property_col_num] < boundry_value) {
+                        queue1.add(index);
+                    }
+                }
+                for (Integer index : queue1) {
+                    upper1.remove(index);
+                    lower1.add(index);
+                }
+        ArrayList<Integer> upper1_grades= new ArrayList<Integer>();
+        ArrayList<Integer> lower1_grades= new ArrayList<Integer>();
+        for(Integer index: upper1) {
+            upper1_grades.add((int)data[index][course_col_num]);
+        }
+        for(Integer index: lower1) {
+            lower1_grades.add((int)data[index][course_col_num]);
+        }
+        users_for_plots = new HashMap<>();
+        users_for_plots.put(1.0, upper1_grades);
+        users_for_plots.put(0.0, lower1_grades);
+        
+
+
+
         prediction_dict.put(false, new HashMap<>());
         prediction_dict.get(false).put("Mean: ",totalVariancePerBoundryValue[minTotalVarianceIndex][2] );
         prediction_dict.get(false).put("Variance: ",totalVariancePerBoundryValue[minTotalVarianceIndex][3] );

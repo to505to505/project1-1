@@ -2,6 +2,7 @@ import javafx.collections.ObservableList;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,6 +57,7 @@ public class DataFunc {
     private static ArrayList<Data> dataList = new ArrayList<Data>();
     private static ObservableList<String> columnList;
     public static ArrayList<String> all_courses = new ArrayList<>(Arrays.asList("JTE-234", "ATE-003", "TGL-013", "PPL-239", "WDM-974", "GHL-823", "HLU-200", "MON-014", "FEA-907", "LPG-307", "TSO-010", "LDE-009", "JJP-001", "MTE-004", "LUU-003", "LOE-103", "PLO-132", "BKO-800", "SLE-332", "BKO-801", "DSE-003", "DSE-005", "ATE-014", "JTW-004", "ATE-008", "DSE-007", "ATE-214", "JHF-101", "KMO-007", "WOT-104"));
+    public static ArrayList<String> all_courses_and_info = new ArrayList<>(Arrays.asList("Suruna Value", "Hurni Level", "Volta ","Lal Count",  "JTE-234", "ATE-003", "TGL-013", "PPL-239", "WDM-974", "GHL-823", "HLU-200", "MON-014", "FEA-907", "LPG-307", "TSO-010", "LDE-009", "JJP-001", "MTE-004", "LUU-003", "LOE-103", "PLO-132", "BKO-800", "SLE-332", "BKO-801", "DSE-003", "DSE-005", "ATE-014", "JTW-004", "ATE-008", "DSE-007", "ATE-214", "JHF-101", "KMO-007", "WOT-104"));
 
     
     // init our basic datasets
@@ -69,6 +71,9 @@ public class DataFunc {
         Data data_student_info = new Data("src/data/StudentInfo.csv");
         data_student_info.name = "StudentInfo";
         dataList.add(data_student_info);
+        Data combinedData = new Data(new AggregateData("src/data/CurrentGrades.csv", "src/data/StudentInfo.csv"));
+        combinedData.name = "Current+StudentInfo";
+        dataList.add(combinedData);
         
     }
 
@@ -280,7 +285,7 @@ public class DataFunc {
         ///correlation matrix methods
         public static double[] correlationResNew(String name, String column_name) {
             dataInit();
-             Data right_data = new Data();
+            Data right_data = new Data();
             for (Data data : dataList) {
                 if (data.name.equals(name)) {
                     right_data = data;
@@ -294,20 +299,113 @@ public class DataFunc {
             }
             double[] correlation_array = new double[right_data.columnNames.length];
             for(int i =0; i<right_data.columnNames.length; i++) {
-                correlation_array[i] = Utility.pearsonCorrelation(right_data, col_number, i);
+                //double roundedNumber = Double.parseDouble(String.format("%.1f", Utility.pearsonCorrelation(right_data, col_number, i)));
+                double roundedNumber = Math.round(Utility.pearsonCorrelation(right_data, col_number, i) * 100) / 100.0;
+                correlation_array[i] = roundedNumber;
             }
             return correlation_array;
-
+        }
+        public static double[] euclidianResNew(String name, String column_name){
+            dataInit();
+            Data right_data = new Data();
+            for (Data data : dataList) {
+                if (data.name.equals(name)) {
+                    right_data = data;
+            }
+        }
+        int col_number = 0;
+            for(int k =0; k<right_data.columnNames.length; k++) {
+            if(right_data.columnNames[k].equals(column_name)) {
+                col_number = k;
+            }
+            }
+            double[] euclidian_array = new double[right_data.columnNames.length];
+            for(int i =0; i<right_data.columnNames.length; i++) {
+                double roundedNumber = Math.round(Utility.euclidian(right_data.data, col_number, i) * 10000) / 10000.0;
+                euclidian_array[i] = roundedNumber;
+            }
+            return euclidian_array;
 
         }
+        public static double[] similarityResNew(String name, String column_name) {
+            dataInit();
+            Data right_data = new Data();
+            for (Data data : dataList) {
+                if (data.name.equals(name)) {
+                    right_data = data;
+            }
+        }
+            int col_number = 0;
+            for(int k =0; k<right_data.columnNames.length; k++) {
+            if(right_data.columnNames[k].equals(column_name)) {
+                col_number = k;
+            }
+            }
+            double[] similarity_array = new double[right_data.columnNames.length];
+            for(int i =0; i<right_data.columnNames.length; i++) {
+                double roundedNumber = Math.round(Utility.cosine(right_data.data, col_number, i) * 1000) / 1000.0;
+                similarity_array[i] = roundedNumber;
+            }
+            return similarity_array;
+        }
 
-       
 
-    }
-    
+        /// getting data for swarm plot
+        // getting the data for scatter plot chart
+        public static XYChart.Series<Number, Number> getSwarm(HashMap<Double, ArrayList<Integer>> users_for_plots, String property_name) {
+            XYChart.Series<Number, Number> series  = new XYChart.Series<>();
+            double[][] indexes_array = new double[users_for_plots.size()][11];
+            for (Map.Entry<Double, ArrayList<Integer>> entry : users_for_plots.entrySet()) {
+                ArrayList<Integer> ii = entry.getValue();
+                for(Integer grade : ii) {
+                    if(grade!=-1) {
+                        if(property_name.equals("Volta ")){ 
+                            indexes_array[((int) Math.round(entry.getKey()))-1][grade]++;
+                        } else {
+                        indexes_array[(int) Math.round(entry.getKey())][grade]++;
+                    }}
+                }
+                
+            }
         
-    
-  
+        ArrayList<ArrayList<Integer>> index_array_max_min = new ArrayList<ArrayList<Integer>>();
+        for(int j =0; j<indexes_array.length; j++) {
+            int max = 0;
+            int min = 10000;
+            for(int k =0 ;k<indexes_array[j].length; k++) {
+                
+                if(indexes_array[j][k]!=0) {
+                    if(indexes_array[j][k]>max) {
+                        max = (int) indexes_array[j][k];
+                    }
+                    if(indexes_array[j][k]<min) {
+                        min = (int) indexes_array[j][k];
+                    }
+                }
+            }
+                index_array_max_min.add(new ArrayList<Integer>(Arrays.asList(min, max)));
+            
+
+        }
+        for(int j =0; j<indexes_array.length; j++) {
+            for(int k =0 ;k<indexes_array[j].length; k++) {
+                if(indexes_array[j][k]!=0) {
+                    indexes_array[j][k] = (indexes_array[j][k]-index_array_max_min.get(j).get(0))/(index_array_max_min.get(j).get(1)-index_array_max_min.get(j).get(0))*18;
+                }
+            }
+        }
 
 
-
+        for(int j =0; j<indexes_array.length; j++) {
+            for(int k =0 ;k<indexes_array[j].length; k++) {
+                if(indexes_array[j][k]!=0) {
+                XYChart.Data<Number, Number> data_piece = new XYChart.Data<>(j+2, k);
+                Circle circle = new Circle(indexes_array[j][k]);
+                data_piece.setNode(circle);
+                series.getData().add(data_piece); 
+                }
+            }
+        }
+            return series;
+        }
+    }
