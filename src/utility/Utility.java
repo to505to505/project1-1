@@ -78,7 +78,7 @@ public abstract class Utility {
         for(int i = 0; i < data.studentIDs.length; i++)
             if(data.data[i][columnIndex1] > 0 && data.data[i][columnIndex2] > 0){
                 md1 = data.data[i][columnIndex1] - mean1;
-                md2 = data.data[i][columnIndex1] - mean2;
+                md2 = data.data[i][columnIndex2] - mean2;
                 meanDifProd += md1*md2;
                 meanDifSq1 += md1*md1;
                 meanDifSq2 += md2*md2;
