@@ -431,7 +431,7 @@ private VBox Scatter(Stage stage){
 
         stage.setFullScreen(false);
         stage.setFullScreenExitHint("Press ESC when you get bored");
-        stage.setWidth(1080);
+        stage.setWidth(1440);
         stage.setHeight(720); 
         //stage.setResizable(false);
 
@@ -514,38 +514,16 @@ private VBox Scatter(Stage stage){
 
         ///Side Menu
         VBox sideMenu = new VBox();
-        sideMenu.setPrefWidth(200);
+        sideMenu.setPrefWidth(260);
         sideMenu.setStyle("-fx-background-color: #333333; -fx-text-fill: white;");
 
-        
-        Button button1 = new Button("Histograms and count plots");
-        Button button2 = new Button("Line plots");
-        Button button3 = new Button("Scatter plots");
-        Button button4 = new Button("Joint plots (with bar chart)");
-        Button button5 = new Button("Joint plots (with line chart)");
-        Button button6 = new Button("Swarm plots");
-        Button button7 = new Button("Cum-laude");
-        Button button8 = new Button("Courses difficulty");
-        Button button9 = new Button("Courses similarity");
-        Button button10 = new Button("Number of Missing Grades per Student");
-        Button button11 = new Button("Ungraded Students Count per Course");
-        Button button12 = new Button("Sorted Graded Students Count per Course");
-        Button button13 = new Button("Grade Average for Groups of Students by Student Property");
-        Button button14 = new Button("Swarm plots");
-        Button button15 = new Button("Prediction accuracy");
-
         VBox content1 = new VBox();
-        
-        VBox content2 = new VBox();;
-
-
-
+        VBox content2 = new VBox();
         VBox content3 = new VBox();
-
         VBox content4 = new VBox();
 
-        int BUTTON_COUNT = 15;
-        String[] BUTTON_TEXTS = {"Histograms and count plots", "Line plots", "Scatter plots", "Joint plots (with bar chart)","Joint plots (with line chart)",  "Swarm plots", "Cum-laude", "Courses difficulty", "Courses similarity", "Number of Missing Grades per Student","Ungraded Students Count per Course", "Sorted Graded Students Count per Course", "Grade Average for Groups of Students by Student Property",  "Swarm plots", "Prediction accuracy"};
+        int BUTTON_COUNT = 14;
+        String[] BUTTON_TEXTS = {"Histograms and count plots", "Scatter plots", "Joint plots (with bar chart)","Joint plots (with line chart)",  "Swarm plots", "Cum-laude", "Courses difficulty", "Courses similarity", "Grade Average for Groups of Students by Student Property", "Number of Missing Grades per Student","Ungraded Students Count per Course", "Sorted Graded Students Count per Course",  "Swarm plot", "Prediction accuracy"};
         
 
         TitledPane titledPane1 = new TitledPane("Raw data", content1);
@@ -558,11 +536,11 @@ private VBox Scatter(Stage stage){
 
         for(int i = 0; i < buttons.length; i++){
             buttons[i] = new Button(BUTTON_TEXTS[i]);
-            if(i<6) {
+            if(i<5) {
                 content1.getChildren().addAll(buttons[i]);
             } else if(i<9) {
                 content2.getChildren().addAll(buttons[i]);
-            }else if(i<13) {
+            }else if(i<12) {
                 content3.getChildren().addAll(buttons[i]);
             } else {
                 content4.getChildren().addAll(buttons[i]);
@@ -587,43 +565,42 @@ private VBox Scatter(Stage stage){
                         stage.show();   
                         break;
                     case 1:
-                        root.setCenter(Findings.gradeAveragePerPropertyValue(new AggregateData("data/CurrentGrades.csv", "data/StudentInfo.csv")));
-                        stage.show();
-                        break;
-                    case 2:
                         VBox vBox2 = Scatter(stage);
                         root.setCenter(vBox2);
                         stage.show();
                         break;
-                    
-                    case 3:
+                    case 2:
                         VBox VBox3 = JointPlot_bar();
                         root.setCenter(VBox3);
                         stage.show();
                         break;
-                    case 4:
+                    case 3:
                         VBox vBox4 = JointPlot_line();
                         root.setCenter(vBox4);
                         stage.show();
                         break;
-                    case 5:
+                    case 4:
                         VBox vBox5 = SwarmPlot();
                         root.setCenter(vBox5);
                         stage.show();
                         break;
-                    case 6:
+                    case 5:
                         VBox vBox6 = PieChart(stage);
                         root.setCenter(vBox6);
                         stage.show();
                         break;
-                    case 7:
+                    case 6:
                         VBox vBox7 = Course_difficulty();
                         root.setCenter(vBox7);
                         stage.show();
                         break;
-                    case 8:
+                    case 7:
                         VBox vBox8 = Table_draw();
                         root.setCenter(vBox8);
+                        stage.show();
+                        break;
+                    case 8:
+                        root.setCenter(Findings.gradeAveragePerPropertyValue(new AggregateData("data/CurrentGrades.csv", "data/StudentInfo.csv")));
                         stage.show();
                         break;
                     case 9: 
@@ -658,7 +635,7 @@ private VBox Scatter(Stage stage){
                         break;
 
                 }
-                for(int j = 0; i < buttons.length; j++)
+                for(int j = 0; j < buttons.length; j++)
                     if(j!=i) buttons[j].setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
             }
         };
