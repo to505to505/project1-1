@@ -1,7 +1,7 @@
-package main;
-
-import prediction.DS;
+package AdditionalPlotClasses;
 import javafx.scene.chart.NumberAxis;
+import prediction.*;
+
 
 public class NumTickLabelFormatter extends NumberAxis.DefaultFormatter {
     public String[] courses_names;

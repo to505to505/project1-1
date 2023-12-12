@@ -6,12 +6,20 @@
     "configurations": [
         {
             "type": "java",
+<<<<<<< HEAD
             "name": "BoxPlotTest",
             "request": "launch",
             "mainClass": "test.BoxPlotTest",
             "projectName": "plots_b5ad89ff",
             "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web",
             
+=======
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "main.Main",
+            "projectName": "group19_project_51ab7fed", 
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+>>>>>>> fec4afdf18db44252de77c1b216b4440c799dacc
         },
         {
             "type": "java",
@@ -25,7 +33,7 @@
             "request": "launch",
             "mainClass": "auxiliary.ElegibleStudents",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -33,7 +41,7 @@
             "request": "launch",
             "mainClass": "auxiliary.ExamHistogram",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -41,7 +49,7 @@
             "request": "launch",
             "mainClass": "auxiliary.GradPrediction",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -49,7 +57,7 @@
             "request": "launch",
             "mainClass": "auxiliary.OrderExam",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -57,7 +65,7 @@
             "request": "launch",
             "mainClass": "auxiliary.TestDataFilters",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -65,7 +73,7 @@
             "request": "launch",
             "mainClass": "charts.HistogramChart",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -73,7 +81,7 @@
             "request": "launch",
             "mainClass": "charts.PieChartPlot",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -81,7 +89,7 @@
             "request": "launch",
             "mainClass": "charts.ScatterPlotChart",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -89,7 +97,7 @@
             "request": "launch",
             "mainClass": "data.DC",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -97,7 +105,7 @@
             "request": "launch",
             "mainClass": "data.DE",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -105,7 +113,7 @@
             "request": "launch",
             "mainClass": "data.Data",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -113,7 +121,11 @@
             "request": "launch",
             "mainClass": "data.deprecated.Cell",
             "projectName": "plots_b5ad89ff",
+<<<<<<< HEAD
             "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+=======
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+>>>>>>> fec4afdf18db44252de77c1b216b4440c799dacc
         },
         {
             "type": "java",
@@ -128,7 +140,7 @@
             "request": "launch",
             "mainClass": "main.Main",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -136,7 +148,7 @@
             "request": "launch",
             "mainClass": "main.MainFunc",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -144,7 +156,7 @@
             "request": "launch",
             "mainClass": "test.Draw1",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -152,7 +164,7 @@
             "request": "launch",
             "mainClass": "test.SwarmTest",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -160,7 +172,7 @@
             "request": "launch",
             "mainClass": "test.test2",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",
@@ -168,7 +180,7 @@
             "request": "launch",
             "mainClass": "test.test3",
             "projectName": "plots_b5ad89ff",
-            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "vmArgs": "--module-path /Users/dmitrii_sakharov/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",

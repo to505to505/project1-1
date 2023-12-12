@@ -121,6 +121,30 @@ public abstract class Utility {
             }
         return sum/count;
     }
+    public static double cosine(double[][] data, int j, int k) {
+        double summ = 0;
+        double dot = 0;
+        double normx = 0;
+        double normy = 0;
+        for (int i = 0; i < data.length; i++) {
+            
+            dot += data[i][j] * data[i][k];
+            normx += Math.pow(data[i][j], 2);
+            normy += Math.pow(data[i][k], 2);
+            
+        }
+        summ = dot / (Math.sqrt(normx * normy));
+        return summ;
+    }
+
+    public static double euclidian(double[][] data, int j, int k) {
+        double summ = 0;
+        for (int i = 0; i < data.length; i++) {
+            summ += Math.pow((data[i][j] - data[i][k]), 2);
+        }
+        summ = Math.sqrt(summ);
+        return summ;
+    }
 
     public static double weightedEuclideanDistance(Data data, int columnIndex, double[] predictionArray){
         double sum = 0; int count = 0;
