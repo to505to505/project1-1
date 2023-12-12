@@ -441,7 +441,7 @@ private VBox Scatter(Stage stage){
 
         menuBar.getMenus().addAll(dataMenu, preferencesMenu);
         //add menubar to root
-        root.setTop(menuBar);
+        //root.setTop(menuBar);
         ///END Menu Bar
 
         VBox startScreen = new VBox();
@@ -511,8 +511,8 @@ private VBox Scatter(Stage stage){
         VBox content3 = new VBox();
         VBox content4 = new VBox();
 
-        int BUTTON_COUNT = 14;
-        String[] BUTTON_TEXTS = {"Histograms and count plots", "Scatter plots", "Joint plots (with bar chart)","Joint plots (with line chart)",  "Swarm plots", "Cum-laude", "Courses difficulty", "Courses similarity", "Grade Average for Groups of Students by Student Property", "Number of Missing Grades per Student","Ungraded Students Count per Course", "Sorted Ungraded Student Count per course",  "Swarm plot", "Prediction accuracy"};
+        int BUTTON_COUNT = 13;
+        String[] BUTTON_TEXTS = {"Histograms and count plots", "Scatter plots", "Joint plots (with bar chart)","Joint plots (with line chart)", "Cum-laude", "Courses difficulty", "Courses similarity", "Grade Average for Groups of Students by Student Property", "Number of Missing Grades per Student","Ungraded Students Count per Course", "Sorted Ungraded Student Count per course",  "Swarm plot", "Prediction accuracy"};
         
 
         TitledPane titledPane1 = new TitledPane("Raw data", content1);
@@ -525,11 +525,11 @@ private VBox Scatter(Stage stage){
 
         for(int i = 0; i < buttons.length; i++){
             buttons[i] = new Button(BUTTON_TEXTS[i]);
-            if(i<5) {
+            if(i<4) {
                 content1.getChildren().addAll(buttons[i]);
-            } else if(i<9) {
+            } else if(i<8) {
                 content2.getChildren().addAll(buttons[i]);
-            }else if(i<12) {
+            }else if(i<11) {
                 content3.getChildren().addAll(buttons[i]);
             } else {
                 content4.getChildren().addAll(buttons[i]);
@@ -569,55 +569,49 @@ private VBox Scatter(Stage stage){
                         stage.show();
                         break;
                     case 4:
-                        VBox vBox5 = SwarmPlot();
+                        VBox vBox5 = PieChart(stage);
                         root.setCenter(vBox5);
                         stage.show();
                         break;
                     case 5:
-                        VBox vBox6 = PieChart(stage);
+                        VBox vBox6 = Course_difficulty();
                         root.setCenter(vBox6);
                         stage.show();
                         break;
                     case 6:
-                        VBox vBox7 = Course_difficulty();
+                        VBox vBox7 = Table_draw();
                         root.setCenter(vBox7);
                         stage.show();
                         break;
                     case 7:
-                        VBox vBox8 = Table_draw();
-                        root.setCenter(vBox8);
+                        root.setCenter(Findings.gradeAveragePerPropertyValue(new AggregateData("data/CurrentGrades.csv", "data/StudentInfo.csv")));
+                        
                         stage.show();
                         break;
                     case 8:
-                        root.setCenter(Findings.gradeAveragePerPropertyValue(new AggregateData("data/CurrentGrades.csv", "data/StudentInfo.csv")));
-                        stage.show();
-                        break;
-                    case 9: 
                         root.setCenter(Findings.NumberOfNGsCourses(dataList.get(0)));
                         stage.show();
                         break;
-                    case 10: 
+                    case 9: 
                         root.setCenter(Findings.NumberOfNGsStudents(dataList.get(0)));
                         stage.show();
                         break;
-                    case 11: 
+                    case 10: 
                         root.setCenter(Findings.NumberOfNGsCoursesSorted());
                         stage.show();
                         break;
+                    case 11: 
+                        VBox vBox11 = SwarmPlot();
+                        root.setCenter(vBox11);
+                        stage.show();
+                        break;
                     case 12:
-                        root.setCenter(startScreen);
-                        stage.show();
-                        break;
-                    case 13:
-                        VBox vBox13 = SwarmPlot();
-                        root.setCenter(vBox13);
-                        stage.show();
-                        break;
-                    case 14: 
                         VBox vBox14 = TablePred();
                         root.setCenter(vBox14);
                         stage.show();
                         break;
+                    
+        
                     default: 
                         root.setCenter(startScreen);
                         stage.show();
@@ -1000,7 +994,7 @@ private VBox Scatter(Stage stage){
         YAxis.autoRangingProperty().set(true);
         XAxis.setLabel(selectedFilter1);
         YAxis.setLabel(selectedFilter2);
-    
+        scatterChart.legendVisibleProperty().setValue(false);
         scatterChart.setAnimated(true);
 
         

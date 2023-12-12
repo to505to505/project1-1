@@ -105,7 +105,7 @@ public abstract class Findings {
                 xAxis.setLabel("Course");
                 yAxis.setLabel("NG count");
                 barChart.setLegendSide(Side.BOTTOM);
-                barChart.borderProperty().set(Border.stroke(Color.rgb(248, 248, 128)));
+                //barChart.borderProperty().set(Border.stroke(Color.rgb(248, 248, 128)));
 
                 //Create Series
                 XYChart.Series<String,Number> series = new XYChart.Series<>();
@@ -209,7 +209,7 @@ public abstract class Findings {
                 yAxis2.setLabel("NG Count");
                 xAxis2.setLabel("Student");
                 barChart2.setLegendSide(Side.BOTTOM);
-                barChart2.borderProperty().set(Border.stroke(Color.rgb(248, 248, 128)));
+                //barChart2.borderProperty().set(Border.stroke(Color.rgb(248, 248, 128)));
 
                 //Create Series
                 XYChart.Series<Number, String> series = new XYChart.Series<>();
@@ -394,7 +394,7 @@ public abstract class Findings {
                     xAxis.setLabel("Course");
                     yAxis.setLabel("Grade average");
                     lineChart.setLegendSide(Side.BOTTOM);
-                    lineChart.borderProperty().set(Border.stroke(Color.rgb(248, 248, 128)));
+                    //lineChart.borderProperty().set(Border.stroke(Color.rgb(248, 248, 128)));
 
                     //Create Series
                     if(selectedPropertyIndex!=2){
