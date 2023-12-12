@@ -2,6 +2,9 @@ package utility;
 
 import java.util.Arrays;
 
+import data.AggregateData;
+import data.DataFilters;
+
 public abstract class Statistics {
 
     public static int count (double[] data) {
@@ -125,6 +128,43 @@ public abstract class Statistics {
         for (double d : data)
             if (d > 0) sum += d;
         return sum / data.length;
+    }
+
+    public static double columnMean (double[][] data, int column) {
+        double sum = 0;
+        int count = 0;
+        for (int i = 0; i < data.length; i++)
+            if (data[i][column] > 0) {
+                sum += data[i][column];
+                count++;
+            }
+        if (count == 0) return 0;
+        return sum / count;
+    }
+
+    public static double averageOf (AggregateData data, int column, int propertyCol, String propertyValue) {
+        int propertyNumber = DataFilters.propertyDict.get(propertyValue);
+        double sum = 0;
+        int count = 0;
+        for (int i = 0; i < data.data.length; i++)
+            if (data.data[i][column] > 0 && data.infoData[i][propertyCol] == propertyNumber) {
+                sum += data.data[i][column];
+                count++;
+            }
+        if(count == 0) return 0;
+        return sum / count;
+    }
+
+    public static double averageOf (AggregateData data, int column, int propertyCol, double lowerBound, double upperBound) {
+        double sum = 0;
+        int count = 0;
+        for (int i = 0; i < data.data.length; i++)
+            if (data.data[i][column] > 0 && data.infoData[i][propertyCol] > lowerBound && data.infoData[i][propertyCol] <= upperBound) {
+                sum += data.data[i][column];
+                count++;
+            }
+        if(count == 0) return 0;
+        return sum / count;
     }
     
     public static double mean (Double[] data) {

@@ -17,6 +17,7 @@ import charts.CustomScatterChart;
 import charts.HistogramChart;
 import charts.PieChartPlot;
 import charts.ScatterPlotChart;
+import data.AggregateData;
 import data.Data;
 import data.DataFunc;
 import data.DataImport;
@@ -444,12 +445,11 @@ public static String get_value_names(String value, String course_name) {
                         stage.show();
                         break;
                     case 4:
-                        root.setCenter(startScreen);
+                        root.setCenter(Findings.NumberOfNGsCoursesSorted());
                         stage.show();
                         break;
                     case 5:
-                        VBox vBox = Scatter(stage);
-                        root.setCenter(vBox);
+                        root.setCenter(Findings.gradeAveragePerPropertyValue(new AggregateData("data/CurrentGrades.csv", "data/StudentInfo.csv")));
                         stage.show();
                         break;
                     case 6:
