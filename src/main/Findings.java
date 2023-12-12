@@ -251,10 +251,10 @@ public abstract class Findings {
         final CategoryAxis xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
         final BarChart<String, Number> bc = new BarChart<String,Number>(xAxis,yAxis);
-        bc.setTitle("Sorted number of graded students per course");
+        bc.setTitle("Sorted Ungraded Student Count per course");
 
         xAxis.setLabel("Courses");
-        yAxis.setLabel("Graded students count");
+        yAxis.setLabel("Ungraded student count");
            
         XYChart.Series<String, Number> year1 = new XYChart.Series<>();
         XYChart.Series<String, Number> year2 = new XYChart.Series<>();
