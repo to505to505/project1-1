@@ -17,7 +17,7 @@ public class NumTickLabelFormatter extends NumberAxis.DefaultFormatter {
     public String toString(Number object) {
         if(object.intValue() == 3.0) {
             return ">="+boundary_value;
-        } else if (object.intValue() == 1.0) {
+        } else if (object.intValue() == 2.0) {
             return "<"+boundary_value;
         } else {
             return "";

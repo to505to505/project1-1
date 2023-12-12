@@ -25,6 +25,7 @@ public class ColorChangingCell_Corr extends TableCell<CorrelationClass, Double> 
             if (item>=0.99) {
                 setTextFill(Color.BLACK); // Цвет текста
                 setStyle("-fx-font-size: 14px; -fx-background-color: #D3D3D3"); // Цвет фона
+                
             }
             else if (item>=0.8) {
                 setTextFill(Color.BLACK); // Цвет текста

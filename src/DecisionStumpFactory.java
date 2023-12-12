@@ -130,5 +130,27 @@ public class DecisionStumpFactory {
         }
         return student_index;
     }
+    public static DS find_best_stump(double[][] data, String course_name, String[] courses_names, ArrayList<String> forbidden_courses) {
+    
+        // setting up variables to save the best decision stump
+        double best_variance = 100.0;
+        DS bestDecisionStump = null;
+    
+        for (String item : courses_names) {
+            if (course_name.equals(item) || (item.equals("TSO-010")) || (item.equals("PLO-132"))
+                || (item.equals("BKO-801")) || forbidden_courses.contains(item) ) {
+    
+            continue;
+            } else {
+                DS decisionStump = DecisionStumpFactory.createDecisionStumpBasic(data, course_name, item, courses_names);
+                double variance_of_iteration = decisionStump.get_total_variance(); 
+                if(variance_of_iteration<best_variance) {
+                    best_variance = variance_of_iteration;
+                    bestDecisionStump = decisionStump;
+                }
+                }
+        }
+        return bestDecisionStump;
+        }
 }
 

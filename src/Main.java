@@ -1,14 +1,10 @@
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javafx.scene.chart.*;
 import javafx.scene.Node;
 import java.util.stream.Collectors;
-
+import javafx.geometry.Side;
+import java.util.*;
 import javax.xml.stream.EventFilter;
 
 import java.awt.Desktop;
@@ -19,6 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -26,6 +23,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
@@ -39,7 +37,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -49,17 +49,16 @@ import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Rotate;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
-import java.util.Arrays;
 import javafx.scene.control.TableCell;
 
 import java.io.BufferedReader;
 import java.lang.reflect.Array;
-import java.util.Random;
 
 public class Main extends Application {
 
@@ -70,6 +69,10 @@ public class Main extends Application {
     public static ArrayList<Data> dataList = new ArrayList<Data>();
     public static ObservableList<String> fileList;
     public static ObservableList<String> columnList;
+
+
+    ///a flag for scatter plot
+    public static boolean line_bool = false;
 
     final static int BUTTON_COUNT = 10;
     final static String[] BUTTON_TEXTS = {"Visualization Sandbox", "Step 1 Findings", "Bar Chart", "Histogram", "Pie Chart", "Scatter Plot", "Swarm Plot", "Step 2 Findings", "Steps 3 & 4 Findings", "PieChartsCum"};
@@ -156,7 +159,7 @@ public class Main extends Application {
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
         BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
-        BorderPane borderPane;
+        
 
         
         filterComboBox.setOnAction(e -> updateHistogram(dataSelector.getValue(), barChart, filterComboBox.getValue()));
@@ -290,7 +293,69 @@ public static String get_value_names(String value, String course_name) {
             return "unknown";   
          }}
 
+private VBox Course_difficulty() {
+    VBox vBox = new VBox();
+    
+    ComboBox<String> dataSelector = new ComboBox<>();
+    dataSelector.setItems(FXCollections.observableArrayList("CurrentGrades", "GraduateGrades"));
+    dataSelector.setValue("GraduateGrades");
 
+    ComboBox<String> filterComboBox = new ComboBox<>();
+    filterComboBox.setItems(FXCollections.observableArrayList("Descending order", "Ascending order"));
+    filterComboBox.setValue("Ascending order");
+
+    CategoryAxis xAxis = new CategoryAxis();
+    NumberAxis yAxis = new NumberAxis();
+    BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+        
+    dataSelector.setOnAction(e -> {
+        
+        updateDifficulty(dataSelector.getValue(), barChart, filterComboBox.getValue());
+    });
+    filterComboBox.setOnAction(e -> {
+        
+        updateDifficulty(dataSelector.getValue(), barChart, filterComboBox.getValue());
+    });
+    
+
+        updateDifficulty(dataSelector.getValue(), barChart, filterComboBox.getValue());
+
+        vBox.getChildren().addAll(dataSelector, filterComboBox,  barChart);
+        
+    
+        return vBox;
+
+} 
+
+private void updateDifficulty(String data_name,BarChart<String, Number> barChart, String filter_name ){
+        barChart.getData().clear();
+        CategoryAxis xAxis = (CategoryAxis) barChart.getXAxis();
+        xAxis.getCategories().clear();
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName(data_name);
+        LinkedHashMap<String, Double> freqMap = new LinkedHashMap<>();
+        if(filter_name.equals("Ascending order")) {
+            freqMap = DataFunc.courses_diffculty(data_name, true);
+        } else {
+            freqMap = DataFunc.courses_diffculty(data_name, false);
+        }
+        
+
+        List<String> dataToAdd1 = new ArrayList<String>();
+        
+
+        for (Map.Entry<String, Double> entry : freqMap.entrySet()) {
+        Double value = entry.getValue();
+        series.getData().add(new XYChart.Data<>(entry.getKey(), (value != null) ? value : 0));
+        dataToAdd1.add(entry.getKey());
+        
+    }
+    xAxis.setCategories(FXCollections.observableArrayList(dataToAdd1));
+
+
+        barChart.getData().add(series);
+        barChart.layout();
+}
 private VBox Scatter(Stage stage){
 
         VBox vBox = new VBox();
@@ -333,15 +398,21 @@ private VBox Scatter(Stage stage){
             }
         }
 
+        Button line = new Button();
+        line.setText("Add regression line");
+        line.setOnAction(e -> {
+            updateScatter(dataSelector.getValue(), scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), true);
+            line_bool = true;
+        });
 
-        updateScatter(dataSelector.getValue(), scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue());
+        updateScatter(dataSelector.getValue(), scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), line_bool);
 
 
-        filter1ComboBox.setOnAction(e -> updateScatter(dataSelector.getValue(), scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue()));
-        filter2ComboBox.setOnAction(e -> updateScatter(dataSelector.getValue(),scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue()));
-        dataSelector.setOnAction(e -> updateScatter(dataSelector.getValue(), scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue()));
+        filter1ComboBox.setOnAction(e -> updateScatter(dataSelector.getValue(), scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), line_bool));
+        filter2ComboBox.setOnAction(e -> updateScatter(dataSelector.getValue(),scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), line_bool));
+        dataSelector.setOnAction(e -> updateScatter(dataSelector.getValue(), scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), line_bool));
         
-        vBox.getChildren().addAll(dataSelector, filter1ComboBox,filter2ComboBox, scatterChart);
+        vBox.getChildren().addAll(dataSelector, filter1ComboBox,filter2ComboBox,line, scatterChart);
         
         return vBox;
     } 
@@ -461,25 +532,28 @@ private VBox Scatter(Stage stage){
                         stage.show();   
                         break;
                     case 1:
-                        root.setCenter(startScreen);
+                        VBox vBox1 = TablePred();
+                        root.setCenter(vBox1);
                         stage.show();
                         break;
                     case 2:
-                        root.setCenter(startScreen);
-                        stage.show();
-                        break;
-                    case 3:
-                        VBox vBox2 = Histogram(stage);
+                        VBox vBox2 = Course_difficulty();
                         root.setCenter(vBox2);
                         stage.show();
                         break;
+                    case 3:
+                        VBox vBox3 = Histogram(stage);
+                        root.setCenter(vBox3);
+                        stage.show();
+                        break;
                     case 4:
-                        root.setCenter(startScreen);
+                        VBox VBox4 = JointPlot();
+                        root.setCenter(VBox4);
                         stage.show();
                         break;
                     case 5:
-                        VBox vBox3 = Scatter(stage);
-                        root.setCenter(vBox3);
+                        VBox vBox5 = Scatter(stage);
+                        root.setCenter(vBox5);
                         stage.show();
                         break;
                     case 6:
@@ -499,8 +573,8 @@ private VBox Scatter(Stage stage){
                         stage.show();
                         break;
                     case 9:
-                        VBox vBox1 = PieChart(stage);
-                        root.setCenter(vBox1);
+                        VBox vBox9 = PieChart(stage);
+                        root.setCenter(vBox9);
                         stage.show();
                         break;
                     case 10: 
@@ -521,6 +595,7 @@ private VBox Scatter(Stage stage){
         
         
         Scene scene = new Scene(root, 1080, 1480);
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
@@ -531,16 +606,169 @@ private VBox Scatter(Stage stage){
         HistogramChart histogram = new HistogramChart(scene);
         histogram.start(stage);
     }
-    private void openPieChartWindow(Stage stage, Scene scene) {
+    /* private void openPieChartWindow(Stage stage, Scene scene) {
         PieChartPlot pieChart = new PieChartPlot(scene);
         pieChart.start(stage); 
-    }
+    } */
     private void openScatterPlotWindow(Stage stage, Scene scene) {
         ScatterPlotChart scatterPlot = new ScatterPlotChart(scene);
         scatterPlot.start(stage);
     }
+    private VBox JointPlot() {
+        VBox VBox = new VBox();
 
-    private void updateScatter(String selectedData, CustomScatterChart scatterChart, String selectedFilter1, String selectedFilter2) {
+        GridPane gridPane = new GridPane();
+
+
+
+
+
+        ComboBox<String> filter1ComboBox = new ComboBox<>();
+        filter1ComboBox.setItems(FXCollections.observableArrayList(DataFunc.all_courses));
+        filter1ComboBox.getSelectionModel().selectFirst(); // selecting default value
+
+
+        ComboBox<String> filter2ComboBox= new ComboBox<>();
+        filter2ComboBox.setItems(FXCollections.observableArrayList(DataFunc.all_courses));
+        filter2ComboBox.getSelectionModel().selectLast(); // selecting default value
+
+        ComboBox<String> filter3ComboBox = new ComboBox<>();
+        filter3ComboBox.setItems(FXCollections.observableArrayList("Suruna Value", "Hurni Level", "Volta "));
+        filter3ComboBox.getSelectionModel().selectFirst(); // selecting default value
+
+        /// working with scatter
+        NumberAxis xAxis1 = new NumberAxis();
+        NumberAxis yAxis1 = new NumberAxis();
+        xAxis1.setLabel(filter1ComboBox.getValue());
+        yAxis1.setLabel(filter2ComboBox.getValue());
+
+
+        CustomScatterChart scatterChart = new CustomScatterChart(xAxis1, yAxis1);
+        scatterChart.setPrefSize(700, 700);
+        scatterChart.setMaxSize(800, 800);
+        //scatterChart.setMinHeight(700);
+
+        updateScatter("Current+StudentInfo", scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), false);
+        
+
+
+        ///working with x-axis histogram
+        CategoryAxis xAxis2 = new CategoryAxis();
+        NumberAxis yAxis2 = new NumberAxis();
+        BarChart<String, Number> barChart1 = new BarChart<String, Number>(xAxis2, yAxis2);
+    
+        
+        barChart1.setPrefSize(850, 700);
+        barChart1.setLegendVisible(true);
+        barChart1.setLegendSide(Side.RIGHT);
+    
+        xAxis2.setGapStartAndEnd(false);
+        yAxis2.setOpacity(0);
+     
+     
+        GridPane.setMargin(barChart1, new Insets(0, 0, 0, 12));
+
+       
+
+        
+        Button btn = new Button();
+        btn.setText("Switch axes");
+        btn.setOnAction(e -> {
+            String value1 =filter1ComboBox.getValue();
+            String value2 = filter2ComboBox.getValue();
+            filter1ComboBox.setValue(value2);
+            filter2ComboBox.setValue(value1);
+        });
+        filter1ComboBox.setOnAction(e -> {
+            updateJoint("Current+StudentInfo",scatterChart, barChart1, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter3ComboBox.getValue());
+            updateScatter("Current+StudentInfo", scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), false);
+    
+        });
+        filter2ComboBox.setOnAction(e -> {
+            updateJoint("Current+StudentInfo",scatterChart, barChart1, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter3ComboBox.getValue());
+            updateScatter("Current+StudentInfo", scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), false);
+        });
+        filter3ComboBox.setOnAction(e -> {
+            updateJoint("Current+StudentInfo",scatterChart, barChart1, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter3ComboBox.getValue());
+        });
+
+        updateJoint("Current+StudentInfo",scatterChart, barChart1, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter3ComboBox.getValue());
+        gridPane.add(barChart1, 1, 0);
+        gridPane.add(scatterChart, 1, 1);  
+        VBox.getChildren().addAll(filter1ComboBox, filter2ComboBox, filter3ComboBox,btn, gridPane);
+        return VBox;
+
+
+        
+
+    }
+    
+
+    private void updateJoint(String selectedData, CustomScatterChart scatterChart, BarChart<String, Number> barChart1,  String selectedFilter1, String selectedFilter2, String selectedFilter3 ) {
+        double upper_b_x = ((NumberAxis) scatterChart.getXAxis()).getUpperBound();
+        double lower_b_x = ((NumberAxis) scatterChart.getXAxis()).getLowerBound();
+        double upper_b_y = ((NumberAxis) scatterChart.getYAxis()).getUpperBound();
+        double lower_b_y = ((NumberAxis) scatterChart.getYAxis()).getLowerBound();
+
+        
+        ArrayList<ArrayList<Series<String,Number>>> all_axis_array = DataFunc.getJoint(selectedFilter1, selectedFilter2, selectedFilter3, selectedData);
+
+        ArrayList<String> dataToAdd_x  = new ArrayList<>();
+        ArrayList<String> dataToAdd_y  = new ArrayList<>();
+
+
+        for(int i =(int) lower_b_x; i<=(int) upper_b_x; i++) {
+            dataToAdd_x.add(String.valueOf(i));
+        }
+         for(int i =(int) lower_b_y; i<=(int) upper_b_y; i++) {
+            dataToAdd_y.add(String.valueOf(i));
+        }
+        ((CategoryAxis) barChart1.getXAxis()).setCategories(FXCollections.observableArrayList(dataToAdd_x));
+        
+
+        
+        
+
+        barChart1.getData().clear();
+        
+        for(Series<String, Number> seris_one_iter: all_axis_array.get(0)) {
+            barChart1.getData().add(seris_one_iter);
+        }
+        
+        
+        for (int i = 0; i < barChart1.getData().size(); i++) {
+            XYChart.Series<String, Number> series = barChart1.getData().get(i);
+            for (XYChart.Data<String, Number> data : series.getData()) {
+                // Применение стиля к каждому столбцу в зависимости от какого-либо условия
+                Node node = data.getNode();
+                switch (i) {
+                    case 0:
+                        node.getStyleClass().add("bar-color-1");
+                        break;
+                    case 1:
+                        node.getStyleClass().add("bar-color-2");
+                        break;
+                    case 2:
+                        node.getStyleClass().add("bar-color-3");
+                        break;
+                    case 3:
+                        node.getStyleClass().add("bar-color-4");
+                        break;
+                    case 4:
+                        node.getStyleClass().add("bar-color-5");
+                        break;
+                    
+                    // и так далее для других серий или условий
+                }
+            }
+        }
+        
+
+        barChart1.layout();
+
+
+    }
+    private void updateScatter(String selectedData, CustomScatterChart scatterChart, String selectedFilter1, String selectedFilter2, boolean line_bool) {
         Data right_data = new Data();
             for (Data data : dataList) {
                 if (data.name.equals(selectedData)) {
@@ -702,6 +930,10 @@ private VBox Scatter(Stage stage){
         dataSelector.setItems(FXCollections.observableArrayList("GraduateGrades", "CurrentGrades", "Current+StudentInfo"));
         dataSelector.getSelectionModel().selectFirst(); // selecting default value
 
+        Button best_stump = new Button();
+        best_stump.setText("Best stump for this course");
+        
+
 
         NumberAxis xAxis = new NumberAxis();
         NumberAxis yAxis = new NumberAxis();
@@ -709,22 +941,73 @@ private VBox Scatter(Stage stage){
         yAxis.setLabel(filter2ComboBox.getValue());
         
         ScatterChart<Number, Number> swarmChart = new CustomScatterChart(xAxis, yAxis);
+
+        best_stump.setOnAction(event -> {
+            updateSwarm(dataSelector.getValue(), swarmChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter2ComboBox, true);
+        });
         
-        updateSwarm(dataSelector.getValue(), swarmChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter2ComboBox);
+        updateSwarm(dataSelector.getValue(), swarmChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter2ComboBox, false);
 
 
-        filter1ComboBox.setOnAction(e -> updateSwarm(dataSelector.getValue(), swarmChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter2ComboBox));
-        filter2ComboBox.setOnAction(e -> updateSwarm(dataSelector.getValue(),swarmChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter2ComboBox));
+        filter1ComboBox.setOnAction(e -> updateSwarm(dataSelector.getValue(), swarmChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter2ComboBox, false));
+        filter2ComboBox.setOnAction(e -> updateSwarm(dataSelector.getValue(),swarmChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter2ComboBox, false));
         dataSelector.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             updateFilter2(filter2ComboBox, newValue);
-            updateSwarm(dataSelector.getValue(), swarmChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter2ComboBox);
+            updateSwarm(dataSelector.getValue(), swarmChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter2ComboBox, false);
         });
         
             
             
-        vBox.getChildren().addAll(dataSelector, filter1ComboBox,filter2ComboBox, swarmChart);
+        vBox.getChildren().addAll(dataSelector, filter1ComboBox,filter2ComboBox, best_stump, swarmChart);
         
         return vBox;
+    }
+
+    public VBox TablePred() {
+        VBox vBox = new VBox();
+
+
+        TableView tbv = new TableView();
+        tbv.setEditable(true);
+
+     
+    
+
+        TableColumn<String, PredictTable> cl1 = new TableColumn<>("Weighted euclid distance"); 
+        cl1.setCellValueFactory(new PropertyValueFactory<>("name"));
+        cl1.setPrefWidth(200);
+        TableColumn<String, PredictTable> cl2 = new TableColumn<>("ATE-003"); 
+        cl2.setCellValueFactory(new PropertyValueFactory<>("ATE_003"));
+        cl2.setPrefWidth(200);
+        TableColumn<String, PredictTable> cl3 = new TableColumn<>("MON-014"); 
+        cl3.setCellValueFactory(new PropertyValueFactory<>("MON_014"));
+        cl3.setPrefWidth(200);
+        TableColumn<String, PredictTable> cl4 = new TableColumn<>("BKO-800"); 
+        cl4.setCellValueFactory(new PropertyValueFactory<>("BKO_800"));
+        cl4.setPrefWidth(200);
+
+        tbv.getColumns().addAll(cl1, cl2, cl3, cl4);
+        
+        ArrayList<PredictTable> all_pred_in_table = new ArrayList<>();
+        all_pred_in_table.add(new PredictTable(0.039976, 0.046447, 0.0307771, "10 best splits"));
+        all_pred_in_table.add(new PredictTable(0.040746, 0.047967, 0.030994, "3 best splits"));
+        all_pred_in_table.add(new PredictTable(0.028359, 0.031919, 0.023208, "1 best splits"));
+        
+
+        for(PredictTable pred_solo : all_pred_in_table) {
+            tbv.getItems().addAll(pred_solo);
+        }
+        
+
+        vBox.getChildren().addAll(tbv);
+        return vBox;
+    
+       
+        
+
+
+    
+
     }
     public void updateFilter2(ComboBox filter2ComboBox, String selectedData) {
         if(selectedData.equals("Current+StudentInfo")) {
@@ -736,7 +1019,7 @@ private VBox Scatter(Stage stage){
             filter2ComboBox.getSelectionModel().selectFirst();
         }
     }
-    public void updateSwarm(String selectedData, ScatterChart<Number, Number> scatterChart, String selectedFilter1, String selectedFilter2, ComboBox filter2ComboBox) {
+    public void updateSwarm(String selectedData, ScatterChart<Number, Number> scatterChart, String selectedFilter1, String selectedFilter2, ComboBox filter2ComboBox, boolean best) {
         
         Data right_data = new Data();
                 for (Data data : dataList) {
@@ -765,15 +1048,21 @@ private VBox Scatter(Stage stage){
             XAxis.setLabel(selectedFilter2);
             YAxis.setLabel(selectedFilter1);
             scatterChart.setAnimated(true);
+            XYChart.Series<Number, Number> series =  new XYChart.Series<>();
+            DS ds;
+            if(!best) {
+            ds = DecisionStumpFactory.createDecisionStumpBasic(right_data.data, selectedFilter1, selectedFilter2, right_data.columnNames);
+            series =  DataFunc.getSwarm(ds.get_users_for_plots(), ds.get_property_name());
+            } else {
+                ArrayList<String> forbidd_courses = new ArrayList<>();
+                ds = DecisionStumpFactory.find_best_stump(right_data.data, selectedFilter1, right_data.columnNames, forbidd_courses);
+                series =  DataFunc.getSwarm(ds.get_users_for_plots(), ds.get_property_name());
+                XAxis.setLabel(ds.get_property_name());
+            }
 
-            DS ds = DecisionStumpFactory.createDecisionStumpBasic(right_data.data, selectedFilter1, selectedFilter2, right_data.columnNames);
-            XYChart.Series<Number, Number> series =  DataFunc.getSwarm(ds.get_users_for_plots(), ds.get_property_name());
 
 
-
-            
-    
-
+        
             YAxis.autoRangingProperty().set(false);
             YAxis.setUpperBound(11);
             YAxis.setLowerBound(4);
