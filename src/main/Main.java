@@ -1,13 +1,11 @@
 package main;
-import data.Data;
-import data.DataFunc;
-import data.DataImport;
+
 import data.*;
 import prediction.*;
 import charts.*;
 import utility.*;
-import utility.CorrelationClass;
 
+import javafx.scene.control.TitledPane;
 import java.io.File;
 import java.io.IOException;
 import javafx.scene.chart.*;
@@ -16,11 +14,13 @@ import java.util.stream.Collectors;
 import javafx.geometry.Side;
 import java.util.*;
 import javax.xml.stream.EventFilter;
+import javafx.scene.control.Label;
 
 import AdditionalPlotClasses.*;
+import AdditionalPlotClasses.CorrelationClass;
 
 import java.awt.Desktop;
-import java.awt.Label;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -31,10 +31,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.PieChart;
-import javafx.scene.chart.ScatterChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -47,6 +43,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -54,23 +52,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Polyline;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Rotate;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.scene.Parent;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.control.TableCell;
-
-import java.io.BufferedReader;
-import java.lang.reflect.Array;
 
 public class Main extends Application {
 
@@ -86,10 +69,7 @@ public class Main extends Application {
     ///a flag for scatter plot
     public static boolean line_bool = false;
 
-    final static int BUTTON_COUNT = 10;
-    final static String[] BUTTON_TEXTS = {"Visualization Sandbox", "Step 1 Findings", "Bar Chart", "Histogram", "Pie Chart", "Scatter Plot", "Swarm Plot", "Step 2 Findings", "Steps 3 & 4 Findings", "PieChartsCum"};
     
-
 
 
 
@@ -116,35 +96,49 @@ public class Main extends Application {
        
 
         ComboBox<String> filterComboBox = new ComboBox<>();
-        filterComboBox.setItems(FXCollections.observableArrayList("GPA greater than 7.5", "No grades lower than 7"));
+        filterComboBox.setItems(FXCollections.observableArrayList("GPA greater than boundary value", "No grades lower than boundary value"));
         filterComboBox.getSelectionModel().selectFirst();
 
 
         ComboBox<String> dataSelector = new ComboBox<>();
         dataSelector.setItems(FXCollections.observableArrayList("CurrentGrades", "GraduateGrades"));
         dataSelector.setValue("GraduateGrades"); 
+
+
+        ComboBox<String> filterBoundary = new ComboBox<>();
+        filterBoundary.setItems(FXCollections.observableArrayList("7", "7.5", "8.0"));
+        filterBoundary.setValue("7.5");
+        
+        Label label = new Label("Boundary value:");
+
+        HBox hbox = new HBox();
+
+        hbox.getChildren().addAll(label, filterBoundary);
+        hbox.setSpacing(10);
         // Creating a Pie chart
 
         PieChart pieChart = new PieChart();
 
 
-        filterComboBox.setOnAction(e -> updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue()));
-        dataSelector.setOnAction(e -> updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue()));
+        filterComboBox.setOnAction(e -> updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue(), filterBoundary.getValue()));
+        dataSelector.setOnAction(e -> updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue(), filterBoundary.getValue()));
+        filterBoundary.setOnAction(e -> updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue(), filterBoundary.getValue()));
 
 
 
 
 
-        updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue());
+        updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue(), filterBoundary.getValue());
         
-        vBox.getChildren().addAll(dataSelector, filterComboBox, pieChart);
+        vBox.getChildren().addAll(dataSelector, filterComboBox, hbox, pieChart);
         return vBox;
 
 
     }
-    private void updatePieChart(String selectedData, PieChart PieChart, String selectedFilter) {
+    private void updatePieChart(String selectedData, PieChart PieChart, String selectedFilter, String selectedBoundary) {
         PieChart.getData().clear(); // Очистка предыдущих данных
-        ArrayList<Integer> cum_students = DataFunc.cum(selectedData, selectedFilter);
+        Double boundary = Double.parseDouble(selectedBoundary);
+        ArrayList<Integer> cum_students = DataFunc.cum(selectedData, selectedFilter, boundary);
         int all_students_length = DataFunc.data_size(selectedData);
         PieChart.Data slice1 = new PieChart.Data("Cum-Laude", cum_students.size());
         PieChart.Data slice2 = new PieChart.Data("Others", all_students_length-cum_students.size());
@@ -431,7 +425,7 @@ private VBox Scatter(Stage stage){
     @Override
     public void start(Stage stage) {
 
-        Image icon = new Image("data/icon.png");
+        Image icon = new Image("media/icon.png");
         stage.getIcons().add(icon);
         stage.setTitle("Data visualization");
 
@@ -521,14 +515,61 @@ private VBox Scatter(Stage stage){
         ///Side Menu
         VBox sideMenu = new VBox();
         sideMenu.setPrefWidth(200);
-        sideMenu.setStyle("-fx-background-color: #333333;");
 
+        
+        Button button1 = new Button("Histograms and count plots");
+        Button button2 = new Button("Line plots");
+        Button button3 = new Button("Scatter plots");
+        Button button4 = new Button("Joint plots (with bar chart)");
+        Button button5 = new Button("Joint plots (with line chart)");
+        Button button6 = new Button("Swarm plots");
+        Button button7 = new Button("Cum-laude");
+        Button button8 = new Button("Courses difficulty");
+        Button button9 = new Button("Courses similarity");
+        Button button10 = new Button("Number of Missing Grades per Student");
+        Button button11 = new Button("Ungraded Students Count per Course");
+        Button button12 = new Button("Sorted Graded Students Count per Course");
+        Button button13 = new Button("Grade Average for Groups of Students by Student Property");
+        Button button14 = new Button("Swarm plots");
+        Button button15 = new Button("Prediction accuracy");
+
+        VBox content1 = new VBox();
+        
+        VBox content2 = new VBox();;
+
+
+
+        VBox content3 = new VBox();
+
+        VBox content4 = new VBox();
+
+        int BUTTON_COUNT = 15;
+        String[] BUTTON_TEXTS = {"Histograms and count plots", "Line plots", "Scatter plots", "Joint plots (with bar chart)","Joint plots (with line chart)",  "Swarm plots", "Cum-laude", "Courses difficulty", "Courses similarity", "Number of Missing Grades per Student","Ungraded Students Count per Course", "Sorted Graded Students Count per Course", "Grade Average for Groups of Students by Student Property",  "Swarm plots", "Prediction accuracy"};
+        
+
+        TitledPane titledPane1 = new TitledPane("Raw data", content1);
+        TitledPane titledPane2 = new TitledPane("Step 1", content2);
+        TitledPane titledPane3 = new TitledPane("Step 2", content3);
+        TitledPane titledPane4 = new TitledPane("Step 3 and 4", content4);
+        
         Button[] buttons = new Button[BUTTON_COUNT];
+        
+
         for(int i = 0; i < buttons.length; i++){
             buttons[i] = new Button(BUTTON_TEXTS[i]);
+            if(i<6) {
+                content1.getChildren().addAll(buttons[i]);
+            } else if(i<9) {
+                content2.getChildren().addAll(buttons[i]);
+            }else if(i<13) {
+                content3.getChildren().addAll(buttons[i]);
+            } else {
+                content4.getChildren().addAll(buttons[i]);
+            }
+        
             buttons[i].setPrefWidth(sideMenu.getPrefWidth());
             buttons[i].setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
-        }
+        } 
 
         EventHandler<ActionEvent> sideMenuHandler = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e){
@@ -540,67 +581,89 @@ private VBox Scatter(Stage stage){
                 buttons[i].setStyle("-fx-background-color: #666666; -fx-text-fill: white;");
                 switch(i){
                     case 0:
-                        root.setCenter(sandbox);
+                        VBox vBox0 = Histogram(stage);
+                        root.setCenter(vBox0);
                         stage.show();   
                         break;
                     case 1:
-                        VBox vBox1 = TablePred();
-                        root.setCenter(vBox1);
+                        root.setCenter(Findings.gradeAveragePerPropertyValue(new AggregateData("data/CurrentGrades.csv", "data/StudentInfo.csv")));
                         stage.show();
                         break;
                     case 2:
-                        VBox vBox2 = Course_difficulty();
+                        VBox vBox2 = Scatter(stage);
                         root.setCenter(vBox2);
                         stage.show();
                         break;
+                    
                     case 3:
-                        VBox vBox3 = Histogram(stage);
-                        root.setCenter(vBox3);
+                        VBox VBox3 = JointPlot_bar();
+                        root.setCenter(VBox3);
                         stage.show();
                         break;
                     case 4:
-                        VBox VBox4 = JointPlot();
-                        root.setCenter(VBox4);
+                        VBox vBox4 = JointPlot_line();
+                        root.setCenter(vBox4);
                         stage.show();
                         break;
                     case 5:
-                        VBox vBox5 = Scatter(stage);
+                        VBox vBox5 = SwarmPlot();
                         root.setCenter(vBox5);
                         stage.show();
                         break;
                     case 6:
-                        VBox vBox6 = SwarmPlot();
+                        VBox vBox6 = PieChart(stage);
                         root.setCenter(vBox6);
                         stage.show();
                         break;
                     case 7:
-                        VBox vBox7 = Table_draw();
+                        VBox vBox7 = Course_difficulty();
                         root.setCenter(vBox7);
                         stage.show();
                         break;
                     case 8:
-                        BorderPane g = new BorderPane();
-                        g.setStyle("-fx-background-color: #333333");
-                        root.setCenter(g);
+                        VBox vBox8 = Table_draw();
+                        root.setCenter(vBox8);
                         stage.show();
                         break;
-                    case 9:
-                        VBox vBox9 = PieChart(stage);
-                        root.setCenter(vBox9);
+                    case 9: 
+                        root.setCenter(Findings.NumberOfNGsCourses(dataList.get(0)));
                         stage.show();
                         break;
                     case 10: 
+                        root.setCenter(Findings.NumberOfNGsStudents(dataList.get(0)));
+                        stage.show();
+                        break;
+                    case 11: 
+                        root.setCenter(Findings.NumberOfNGsCoursesSorted());
+                        stage.show();
+                        break;
+                    case 12:
                         root.setCenter(startScreen);
                         stage.show();
                         break;
-                    default:
+                    case 13:
+                        VBox vBox13 = SwarmPlot();
+                        root.setCenter(vBox13);
+                        stage.show();
+                        break;
+                    case 14: 
+                        VBox vBox14 = TablePred();
+                        root.setCenter(vBox14);
+                        stage.show();
+                        break;
+                    default: 
+                        root.setCenter(startScreen);
+                        stage.show();
+                        break;
+
                 }
                 for(int j = 0; i < buttons.length; j++)
                     if(j!=i) buttons[j].setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
             }
         };
+                
         for(Button b : buttons) b.setOnAction(sideMenuHandler);
-        sideMenu.getChildren().addAll(buttons);
+        sideMenu.getChildren().addAll(titledPane1, titledPane2, titledPane3, titledPane4);
         //add Side Menu to root
         root.setLeft(sideMenu);
         ///End Side Menu
@@ -611,6 +674,8 @@ private VBox Scatter(Stage stage){
         stage.setScene(scene);
         stage.show();
     }
+        
+    
     
 
 
@@ -626,8 +691,9 @@ private VBox Scatter(Stage stage){
         ScatterPlotChart scatterPlot = new ScatterPlotChart(scene);
         scatterPlot.start(stage);
     }
-    private VBox JointPlot() {
-        VBox VBox = new VBox();
+    private VBox JointPlot_line() {
+
+    VBox VBox = new VBox();
 
         GridPane gridPane = new GridPane();
 
@@ -664,11 +730,14 @@ private VBox Scatter(Stage stage){
         
 
 
+
         ///working with x-axis histogram
         CategoryAxis xAxis2 = new CategoryAxis();
         NumberAxis yAxis2 = new NumberAxis();
-        BarChart<String, Number> barChart1 = new BarChart<String, Number>(xAxis2, yAxis2);
     
+     
+        LineChart<String, Number> barChart1 = new LineChart<>(xAxis2, yAxis2);
+        
         
         barChart1.setPrefSize(850, 700);
         barChart1.setLegendVisible(true);
@@ -714,6 +783,158 @@ private VBox Scatter(Stage stage){
         
 
     }
+    private VBox JointPlot_bar() {
+        VBox VBox = new VBox();
+
+        GridPane gridPane = new GridPane();
+
+        ComboBox<String> filter1ComboBox = new ComboBox<>();
+        filter1ComboBox.setItems(FXCollections.observableArrayList(DataFunc.all_courses));
+        filter1ComboBox.getSelectionModel().selectFirst(); // selecting default value
+
+
+        ComboBox<String> filter2ComboBox= new ComboBox<>();
+        filter2ComboBox.setItems(FXCollections.observableArrayList(DataFunc.all_courses));
+        filter2ComboBox.getSelectionModel().selectLast(); // selecting default value
+
+        ComboBox<String> filter3ComboBox = new ComboBox<>();
+        filter3ComboBox.setItems(FXCollections.observableArrayList("Suruna Value", "Hurni Level", "Volta "));
+        filter3ComboBox.getSelectionModel().selectFirst(); // selecting default value
+
+        /// working with scatter
+        NumberAxis xAxis1 = new NumberAxis();
+        NumberAxis yAxis1 = new NumberAxis();
+        xAxis1.setLabel(filter1ComboBox.getValue());
+        yAxis1.setLabel(filter2ComboBox.getValue());
+
+
+        CustomScatterChart scatterChart = new CustomScatterChart(xAxis1, yAxis1);
+        scatterChart.setPrefSize(700, 700);
+        scatterChart.setMaxSize(800, 800);
+        //scatterChart.setMinHeight(700);
+
+        updateScatter("Current+StudentInfo", scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), false);
+        
+
+
+
+        ///working with x-axis histogram
+        CategoryAxis xAxis2 = new CategoryAxis();
+        NumberAxis yAxis2 = new NumberAxis();
+    
+     
+        BarChart<String, Number> barChart1 = new BarChart<>(xAxis2, yAxis2);
+        
+        
+        barChart1.setPrefSize(850, 700);
+        barChart1.setLegendVisible(true);
+        barChart1.setLegendSide(Side.RIGHT);
+    
+        xAxis2.setGapStartAndEnd(false);
+        yAxis2.setOpacity(0);
+     
+     
+        GridPane.setMargin(barChart1, new Insets(0, 0, 0, 12));
+
+       
+
+        
+        Button btn = new Button();
+        btn.setText("Switch axes");
+        btn.setOnAction(e -> {
+            String value1 =filter1ComboBox.getValue();
+            String value2 = filter2ComboBox.getValue();
+            filter1ComboBox.setValue(value2);
+            filter2ComboBox.setValue(value1);
+        });
+        filter1ComboBox.setOnAction(e -> {
+            updateJoint("Current+StudentInfo",scatterChart, barChart1, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter3ComboBox.getValue());
+            updateScatter("Current+StudentInfo", scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), false);
+    
+        });
+        filter2ComboBox.setOnAction(e -> {
+            updateJoint("Current+StudentInfo",scatterChart, barChart1, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter3ComboBox.getValue());
+            updateScatter("Current+StudentInfo", scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), false);
+        });
+        filter3ComboBox.setOnAction(e -> {
+            updateJoint("Current+StudentInfo",scatterChart, barChart1, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter3ComboBox.getValue());
+        });
+
+        updateJoint("Current+StudentInfo",scatterChart, barChart1, filter1ComboBox.getValue(), filter2ComboBox.getValue(), filter3ComboBox.getValue());
+        gridPane.add(barChart1, 1, 0);
+        gridPane.add(scatterChart, 1, 1);  
+        VBox.getChildren().addAll(filter1ComboBox, filter2ComboBox, filter3ComboBox,btn, gridPane);
+        return VBox;
+
+
+        
+
+    }
+    private void updateJoint(String selectedData, CustomScatterChart scatterChart, LineChart<String, Number> barChart1,  String selectedFilter1, String selectedFilter2, String selectedFilter3 ) {
+    double upper_b_x = ((NumberAxis) scatterChart.getXAxis()).getUpperBound();
+        double lower_b_x = ((NumberAxis) scatterChart.getXAxis()).getLowerBound();
+        double upper_b_y = ((NumberAxis) scatterChart.getYAxis()).getUpperBound();
+        double lower_b_y = ((NumberAxis) scatterChart.getYAxis()).getLowerBound();
+
+        
+        ArrayList<ArrayList<Series<String,Number>>> all_axis_array = DataFunc.getJoint(selectedFilter1, selectedFilter2, selectedFilter3, selectedData);
+
+        ArrayList<String> dataToAdd_x  = new ArrayList<>();
+        ArrayList<String> dataToAdd_y  = new ArrayList<>();
+
+
+        for(int i =(int) lower_b_x; i<=(int) upper_b_x; i++) {
+            dataToAdd_x.add(String.valueOf(i));
+        }
+         for(int i =(int) lower_b_y; i<=(int) upper_b_y; i++) {
+            dataToAdd_y.add(String.valueOf(i));
+        }
+        ((CategoryAxis) barChart1.getXAxis()).setCategories(FXCollections.observableArrayList(dataToAdd_x));
+        
+
+        
+        
+
+        barChart1.getData().clear();
+        
+        for(Series<String, Number> seris_one_iter: all_axis_array.get(0)) {
+            barChart1.getData().add(seris_one_iter);
+        }
+        
+        
+        for (int i = 0; i < barChart1.getData().size(); i++) {
+            XYChart.Series<String, Number> series = barChart1.getData().get(i);
+            for (XYChart.Data<String, Number> data : series.getData()) {
+                // Применение стиля к каждому столбцу в зависимости от какого-либо условия
+                Node node = data.getNode();
+                switch (i) {
+                    case 0:
+                        node.getStyleClass().add("bar-color-1");
+                        break;
+                    case 1:
+                        node.getStyleClass().add("bar-color-2");
+                        break;
+                    case 2:
+                        node.getStyleClass().add("bar-color-3");
+                        break;
+                    case 3:
+                        node.getStyleClass().add("bar-color-4");
+                        break;
+                    case 4:
+                        node.getStyleClass().add("bar-color-5");
+                        break;
+                    
+                    // и так далее для других серий или условий
+                }
+            }
+        }
+        
+
+        barChart1.layout();
+
+
+    }
+
     
 
     private void updateJoint(String selectedData, CustomScatterChart scatterChart, BarChart<String, Number> barChart1,  String selectedFilter1, String selectedFilter2, String selectedFilter3 ) {
@@ -836,8 +1057,10 @@ private VBox Scatter(Stage stage){
         }
         
         double[] series_for_regress_line = Utility.linearRegressionLine(right_data, course_col_num1 , course_col_num2);
-        scatterChart.addLine(series_for_regress_line);
-        
+        if (line_bool) {
+             scatterChart.addLine(series_for_regress_line);
+        }
+     
         scatterChart.getData().add(series);
 
         scatterChart.layout(); 
@@ -1107,7 +1330,6 @@ private VBox Scatter(Stage stage){
 
     public static void main(String[] args) {
         dataInit();
-        System.out.println(dataList.get(0).name);
         launch(args);
     }
 
@@ -1137,20 +1359,20 @@ private VBox Scatter(Stage stage){
     private static void dataInit(){
     
         ///Statically import data
-        Data data_current = new Data("src/data/CurrentGrades.csv");
+        Data data_current = new Data("data/CurrentGrades.csv");
         data_current.name = "CurrentGrades";
         dataList.add(data_current);
 
-        Data data_graduate = new Data("src/data/bugData.csv");
+        Data data_graduate = new Data("data/bugData.csv");
         data_graduate.name = "GraduateGrades";
         dataList.add(data_graduate);
 
         
-        Data data_student_info = new Data("src/data/StudentInfo.csv");
+        Data data_student_info = new Data("data/StudentInfo.csv");
         data_student_info.name = "Student Info";
         dataList.add(data_student_info);
 
-        Data combinedData = new Data(new AggregateData("src/data/CurrentGrades.csv", "src/data/StudentInfo.csv"));
+        Data combinedData = new Data(new AggregateData("data/CurrentGrades.csv", "data/StudentInfo.csv"));
         combinedData.name = "Current+StudentInfo";
         dataList.add(combinedData);
     }

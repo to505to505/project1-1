@@ -62,23 +62,23 @@ public class DataFunc {
     
     // init our basic datasets
     private static void dataInit(){
-        Data data_current = new Data("src/data/CurrentGrades.csv");
+        Data data_current = new Data("data/CurrentGrades.csv");
         data_current.name = "CurrentGrades";
         dataList.add(data_current);
-        Data data_graduate = new Data("src/data/bugData.csv");
+        Data data_graduate = new Data("data/bugData.csv");
         data_graduate.name = "GraduateGrades";
         dataList.add(data_graduate);
-        Data data_student_info = new Data("src/data/StudentInfo.csv");
+        Data data_student_info = new Data("data/StudentInfo.csv");
         data_student_info.name = "StudentInfo";
         dataList.add(data_student_info);
-        Data combinedData = new Data(new AggregateData("src/data/CurrentGrades.csv", "src/data/StudentInfo.csv"));
+        Data combinedData = new Data(new AggregateData("data/CurrentGrades.csv", "data/StudentInfo.csv"));
         combinedData.name = "Current+StudentInfo";
         dataList.add(combinedData);
         
     }
 
     /// data methods for cum laude pie chart 
-    public static ArrayList<Integer> cum(String name, String type) {
+    public static ArrayList<Integer> cum(String name, String type, Double boundary) {
         dataInit();
         Data right_data = new Data();
             for (Data data : dataList) {
@@ -88,7 +88,7 @@ public class DataFunc {
         }
         ArrayList<Integer> users = new ArrayList<Integer>();
         ArrayList<Integer> not_cum = new ArrayList<Integer>();    
-        if(type.equals("GPA greater than 7.5")) {
+        if(type.equals("GPA greater than boundary value")) {
             for (int i = 0; i < right_data.data.length; i++) {
                 double summ = 0;
                 int counter = 0;
@@ -99,14 +99,14 @@ public class DataFunc {
                     }
                 }
                 /// cum-laude is GPA better than 8
-                if (summ / counter >= 7.5) {
+                if (summ / counter >= boundary) {
                     users.add(i);
                 }
             }
         } else {
             for (int i = 0; i < right_data.data.length; i++) {
                 for (int l = 0; l < right_data.data[i].length; l++) {
-                    if(right_data.data[i][l]<7 && right_data.data[i][l]!=-1) {
+                    if(right_data.data[i][l]<boundary && right_data.data[i][l]!=-1) {
                         not_cum.add(i);
                         break;
                         
