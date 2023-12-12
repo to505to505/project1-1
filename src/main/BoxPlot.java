@@ -7,6 +7,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.Chart;
 import javafx.scene.chart.XYChart;
@@ -38,9 +40,23 @@ public class BoxPlot {
         
     }
 
-    public void draw(){
-        for (BoxElement boxElement : boxElements) {
+    public Canvas asCanvas(double width, double height){
+        Canvas canvas = new Canvas(width, height);
+
+        // Get the GraphicsContext of the Canvas
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.strokeLine(0, 400, 400, 0);
+
+        for (int i = 0; i < boxElements.size(); i++) {
+            BoxElement boxElement = boxElements.get(i);
+
             
+            
+
+            gc.setFill(BOX_COLOR);
+            gc.fillRect(i * BOX_WIDTH, boxElement.getQ1(), BOX_WIDTH, boxElement.getQ3() - boxElement.getQ1());
+            gc.strokeLine(0, 400, 400, 0);
+
             // Create box
             Rectangle box = new Rectangle(BOX_WIDTH, boxElement.getQ3() - boxElement.getQ1());
             box.setY(boxElement.getQ1());
@@ -69,6 +85,12 @@ public class BoxPlot {
                 }
             }
         }
+
+        return canvas;
+    }
+
+    public ArrayList<BoxElement> getBoxElements(){
+        return boxElements;
     }
 
     public void add(BoxElement boxElement){

@@ -6,6 +6,15 @@
     "configurations": [
         {
             "type": "java",
+            "name": "BoxPlotTest",
+            "request": "launch",
+            "mainClass": "test.BoxPlotTest",
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web",
+            
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
@@ -103,7 +112,8 @@
             "name": "Cell",
             "request": "launch",
             "mainClass": "data.deprecated.Cell",
-            "projectName": "plots_b5ad89ff","vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+            "projectName": "plots_b5ad89ff",
+            "vmArgs": "--module-path C:/dev_u/uni/proj1.1/plots/lib/javafx-sdk-21.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
         },
         {
             "type": "java",

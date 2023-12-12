@@ -251,10 +251,10 @@ public abstract class Findings {
         final CategoryAxis xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
         final BarChart<String, Number> bc = new BarChart<String,Number>(xAxis,yAxis);
-        bc.setTitle("Sorted number of students without grades per course");
+        bc.setTitle("Sorted number of graded students per course");
 
         xAxis.setLabel("Courses");
-        yAxis.setLabel("NG count");
+        yAxis.setLabel("Graded students count");
            
         XYChart.Series<String, Number> year1 = new XYChart.Series<>();
         XYChart.Series<String, Number> year2 = new XYChart.Series<>();
@@ -374,7 +374,7 @@ public abstract class Findings {
                 Integer selectedPropertyIndex = propertySelectionModel.getSelectedIndex();
                 String selectedPropertyName = propertySelectionModel.getSelectedItem();
 
-                System.out.println(selectedPropertyIndex);
+                //System.out.println(selectedPropertyIndex);
 
                 if(selectedPropertyIndex >= 0) {
 
@@ -386,11 +386,11 @@ public abstract class Findings {
                     Integer[] selectedIndices = new Integer[selectedCoursesIndeces.size()];
                     selectedCoursesIndeces.toArray(selectedIndices);
 
-                    System.out.println(Arrays.toString(selectedIndices));
+                    //System.out.println(Arrays.toString(selectedIndices));
 
                     //Chart Title, Legend & Border
                     lineChart.setTitle("Grade average per category in " + selectedPropertyName);
-                    lineChart.setLegendVisible(false);
+                    lineChart.setLegendVisible(true);
                     xAxis.setLabel("Course");
                     yAxis.setLabel("Grade average");
                     lineChart.setLegendSide(Side.BOTTOM);

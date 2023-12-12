@@ -1,3 +1,4 @@
+package utility;
 import data.DataFunc;
 
 public class CorrelationClass {
