@@ -523,7 +523,7 @@ private VBox Scatter(Stage stage){
         VBox content4 = new VBox();
 
         int BUTTON_COUNT = 14;
-        String[] BUTTON_TEXTS = {"Histograms and count plots", "Scatter plots", "Joint plots (with bar chart)","Joint plots (with line chart)",  "Swarm plots", "Cum-laude", "Courses difficulty", "Courses similarity", "Grade Average for Groups of Students by Student Property", "Number of Missing Grades per Student","Ungraded Students Count per Course", "Sorted Graded Students Count per Course",  "Swarm plot", "Prediction accuracy"};
+        String[] BUTTON_TEXTS = {"Histograms and count plots", "Scatter plots", "Joint plots (with bar chart)","Joint plots (with line chart)",  "Swarm plots", "Cum-laude", "Courses difficulty", "Courses similarity", "Grade Average for Groups of Students by Student Property", "Number of Missing Grades per Student","Ungraded Students Count per Course", "Sorted Ungraded Student Count per course",  "Swarm plot", "Prediction accuracy"};
         
 
         TitledPane titledPane1 = new TitledPane("Raw data", content1);
