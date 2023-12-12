@@ -82,27 +82,6 @@ public class Main extends Application {
     final static int BUTTON_COUNT = 10;
     final static String[] BUTTON_TEXTS = {"Visualization Sandbox", "Step 1 Findings", "Bar Chart", "Histogram", "Pie Chart", "Scatter Plot", "Swarm Plot", "Step 2 Findings", "Steps 3 & 4 Findings", "PieChartsCum"};
     
-
-
-
-
-
-
-
-
-
-    /* private void refreshColumnList(FlowPane filters){ //has a problem when the same column names appear more than once - considers them as different.
-        ArrayList<String> temp = new ArrayList<String>();
-        for(Data data : dataList)
-            for(String s : data.columnNames)
-                temp.add(s);
-        columnList = FXCollections.observableArrayList(temp);
-        ChoiceBox<String> xAxis = new ChoiceBox<String>(columnList);
-        xAxis.setValue("------------");
-        ChoiceBox<String> yAxis = new ChoiceBox<String>(columnList);
-        yAxis.setValue("------------");
-    }
- */
     private VBox PieChart(Stage stage) {
         VBox vBox = new VBox();
 
@@ -339,14 +318,14 @@ public static String get_value_names(String value, String course_name) {
     @Override
     public void start(Stage stage) {
 
-        Image icon = new Image("data/icon.png");
+        Image icon = new Image("media/icon.png");
         stage.getIcons().add(icon);
         stage.setTitle("Data visualization");
 
         stage.setFullScreen(false);
         stage.setFullScreenExitHint("Press ESC when you get bored");
-        stage.setWidth(1080);
-        stage.setHeight(720); 
+        stage.setWidth(1200);
+        stage.setHeight(800); 
         //stage.setResizable(false);
 
         ///Root
@@ -452,11 +431,11 @@ public static String get_value_names(String value, String course_name) {
                         stage.show();   
                         break;
                     case 1:
-                        root.setCenter(startScreen);
+                        root.setCenter(Findings.NumberOfNGsCourses(dataList.get(0)));
                         stage.show();
                         break;
                     case 2:
-                        root.setCenter(startScreen);
+                        root.setCenter(Findings.NumberOfNGsStudents(dataList.get(0)));
                         stage.show();
                         break;
                     case 3:
@@ -498,7 +477,7 @@ public static String get_value_names(String value, String course_name) {
                         break;
                     default:
                 }
-                for(int j = 0; i < buttons.length; j++)
+                for(int j = 0; j < buttons.length; j++)
                     if(j!=i) buttons[j].setStyle("-fx-background-color: #444444; -fx-text-fill: white;");
             }
         };

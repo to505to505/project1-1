@@ -1,3 +1,5 @@
+package prediction;
+
 import java.util.ArrayList;
 
 public class DecisionStumpFactory {

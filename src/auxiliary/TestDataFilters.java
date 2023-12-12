@@ -4,6 +4,8 @@ import java.io.Console;
 import java.io.IOException;
 import java.util.Arrays;
 
+import data.DataFilters;
+
 public class TestDataFilters {
 
     private static Double[][] makeSampleData(int rowCount, int colCount, Double minValue) {

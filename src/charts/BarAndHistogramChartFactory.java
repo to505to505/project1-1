@@ -39,6 +39,33 @@ public abstract class BarAndHistogramChartFactory {
         return barChart;
     }
 
+    public static <X,Y> BarChart<X,Y> createBarChart(Axis<X> xAxis, Axis<Y> yAxis, String title, String xLabel, String yLabel, String[] seriesNames, X[] xArrays, Y[][] yArrays){ //we'll just assume the values play nicely with each other
+
+        //Check that the arrays match
+        for(int i = 0; i < xArrays.length; i++)
+            if(xArrays.length != yArrays[i].length)
+                return null;
+        
+        BarChart<X,Y> barChart = new BarChart<X,Y>(xAxis, yAxis);
+        
+        //Chart Title, Legend & Border
+        barChart.setTitle(title);
+        barChart.setTitleSide(Side.TOP);
+        barChart.setLegendVisible(true); //false if there is a single series
+        barChart.setLegendSide(Side.BOTTOM);
+        barChart.borderProperty().set(Border.stroke(Color.rgb(248, 248, 128)));
+
+        //Create Series
+        for(int i = 0; i < xArrays.length; i++){
+            XYChart.Series<X,Y> series = new XYChart.Series<>();
+            series.setName(seriesNames[i]);
+            for(int j = 0; j < xArrays.length; j++)
+                series.getData().add(new XYChart.Data<X,Y>(xArrays[i], yArrays[i][j]));
+            barChart.getData().add(series);
+        }
+        return barChart;
+    }
+
     public static <X,Y> BarChart<X,Y> createHistogram(Axis<X> xAxis, Axis<Y> yAxis, String title, String xLabel, String yLabel, String[] seriesNames, X[][] xArrays, Y[][] yArrays){ //we'll just assume the values play nicely with each other
 
         //Check that the arrays match

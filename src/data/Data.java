@@ -195,6 +195,16 @@ public class Data {
 
 
 
+    public Data(String name, String[] columnNames, int[] studentIDs, Double[][] result) {
+        this.name = name;
+        this.columnNames = columnNames; 
+        this.studentIDs = studentIDs;   
+        this.data = new double[result.length][result[0].length];
+        for(int i = 0; i < result.length; i++)
+            for(int j = 0; j < result[0].length; j++)
+                this.data[i][j] = result[i][j];
+    }
+
     /**
      * Creates a number of random samples from the initial data of size a certain proportion of it and returns them as an array of Data.
      * 
