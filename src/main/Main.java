@@ -515,6 +515,7 @@ private VBox Scatter(Stage stage){
         ///Side Menu
         VBox sideMenu = new VBox();
         sideMenu.setPrefWidth(200);
+        sideMenu.setStyle("-fx-background-color: #333333; -fx-text-fill: white;");
 
         
         Button button1 = new Button("Histograms and count plots");
