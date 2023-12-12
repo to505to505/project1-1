@@ -74,7 +74,7 @@ public class DataFunc {
     }
 
     /// data methods for cum laude pie chart 
-    public static ArrayList<Integer> cum(String name, String type) {
+    public static ArrayList<Integer> cum(String name, String type, double boundary) {
         dataInit();
         Data right_data = new Data();
             for (Data data : dataList) {
@@ -84,7 +84,7 @@ public class DataFunc {
         }
         ArrayList<Integer> users = new ArrayList<Integer>();
         ArrayList<Integer> not_cum = new ArrayList<Integer>();    
-        if(type.equals("GPA greater than 7.5")) {
+        if(type.equals("GPA greater than boundary")) {
             for (int i = 0; i < right_data.data.length; i++) {
                 double summ = 0;
                 int counter = 0;
@@ -95,14 +95,14 @@ public class DataFunc {
                     }
                 }
                 /// cum-laude is GPA better than 8
-                if (summ / counter >= 7.5) {
+                if (summ / counter >= boundary) {
                     users.add(i);
                 }
             }
         } else {
             for (int i = 0; i < right_data.data.length; i++) {
                 for (int l = 0; l < right_data.data[i].length; l++) {
-                    if(right_data.data[i][l]<7 && right_data.data[i][l]!=-1) {
+                    if(right_data.data[i][l]<boundary && right_data.data[i][l]!=-1) {
                         not_cum.add(i);
                         break;
                         

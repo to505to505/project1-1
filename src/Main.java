@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import javafx.geometry.Side;
 import java.util.*;
 import javax.xml.stream.EventFilter;
-
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import java.awt.Desktop;
-import java.awt.Label;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -104,8 +104,15 @@ public class Main extends Application {
        
 
         ComboBox<String> filterComboBox = new ComboBox<>();
-        filterComboBox.setItems(FXCollections.observableArrayList("GPA greater than 7.5", "No grades lower than 7"));
+        filterComboBox.setItems(FXCollections.observableArrayList("GPA greater than boundary", "No grades lower than boundary"));
         filterComboBox.getSelectionModel().selectFirst();
+
+
+        ComboBox<String> filterComboBox_bo = new ComboBox<>();
+        filterComboBox_bo.setItems(FXCollections.observableArrayList("6.5", "7", "7.5", "8", "8.5"));
+        filterComboBox_bo.getSelectionModel().selectFirst();
+        Label label1 = new Label("Choose the boundary");
+        HBox hBox1 = new HBox(label1, filterComboBox_bo);
 
 
         ComboBox<String> dataSelector = new ComboBox<>();
@@ -115,24 +122,24 @@ public class Main extends Application {
 
         PieChart pieChart = new PieChart();
 
-
-        filterComboBox.setOnAction(e -> updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue()));
-        dataSelector.setOnAction(e -> updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue()));
-
-
+        filterComboBox_bo.setOnAction(e -> updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue(), filterComboBox_bo.getValue()));
+        filterComboBox.setOnAction(e -> updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue(), filterComboBox_bo.getValue()));
+        dataSelector.setOnAction(e -> updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue(), filterComboBox_bo.getValue()));
 
 
 
-        updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue());
+
+
+        updatePieChart(dataSelector.getValue(), pieChart, filterComboBox.getValue(), filterComboBox_bo.getValue());
         
-        vBox.getChildren().addAll(dataSelector, filterComboBox, pieChart);
+        vBox.getChildren().addAll(dataSelector, filterComboBox, hBox1, pieChart);
         return vBox;
 
 
     }
-    private void updatePieChart(String selectedData, PieChart PieChart, String selectedFilter) {
+    private void updatePieChart(String selectedData, PieChart PieChart, String selectedFilter, String selectedFilter_bo) {
         PieChart.getData().clear(); // Очистка предыдущих данных
-        ArrayList<Integer> cum_students = DataFunc.cum(selectedData, selectedFilter);
+        ArrayList<Integer> cum_students = DataFunc.cum(selectedData, selectedFilter, Double.parseDouble(selectedFilter_bo));
         int all_students_length = DataFunc.data_size(selectedData);
         PieChart.Data slice1 = new PieChart.Data("Cum-Laude", cum_students.size());
         PieChart.Data slice2 = new PieChart.Data("Others", all_students_length-cum_students.size());
