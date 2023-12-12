@@ -66,30 +66,14 @@ public class Main extends Application {
     public static ObservableList<String> columnList;
 
 
-    ///a flag for scatter plot
+    ///a flag for scatter plot that indicates whether to draw regression line or not
     public static boolean line_bool = false;
 
     
 
 
 
-
-
-
-
-
-    /* private void refreshColumnList(FlowPane filters){ //has a problem when the same column names appear more than once - considers them as different.
-        ArrayList<String> temp = new ArrayList<String>();
-        for(Data data : dataList)
-            for(String s : data.columnNames)
-                temp.add(s);
-        columnList = FXCollections.observableArrayList(temp);
-        ChoiceBox<String> xAxis = new ChoiceBox<String>(columnList);
-        xAxis.setValue("------------");
-        ChoiceBox<String> yAxis = new ChoiceBox<String>(columnList);
-        yAxis.setValue("------------");
-    }
- */
+    // method for drawing Pie Chart with cum-laude students. returns vbox with all required elements
     private VBox PieChart(Stage stage) {
         VBox vBox = new VBox();
 
@@ -135,6 +119,7 @@ public class Main extends Application {
 
 
     }
+    /// method for updating pie chart with cum-laude students when buttons are pressed
     private void updatePieChart(String selectedData, PieChart PieChart, String selectedFilter, String selectedBoundary) {
         PieChart.getData().clear(); // Очистка предыдущих данных
         Double boundary = Double.parseDouble(selectedBoundary);
@@ -146,7 +131,7 @@ public class Main extends Application {
         PieChart.getData().add(slice2);
         PieChart.setLabelsVisible(true);
     }
-        
+    // method for drawing histogram or count plot (based on the data type of variable)
     private VBox Histogram(Stage stage) {
         VBox vBox = new VBox();
 
@@ -192,6 +177,7 @@ public class Main extends Application {
     
         return vBox;
     }
+    /// method to update the histogram when buttons are pressed
     private void updateHistogram(String selectedData, BarChart<String, Number> barChart, String selectedFilter) {
         barChart.getData().clear();
         CategoryAxis xAxis = (CategoryAxis) barChart.getXAxis();
@@ -248,6 +234,7 @@ public class Main extends Application {
         
 
 }
+// decode our double values of categorical variables (which we encoded in the first place in order to put all the data in double[][])
 public static String get_value_names(String value, String course_name) {
     switch (course_name) {
         case "Suruna Value":
@@ -299,6 +286,7 @@ public static String get_value_names(String value, String course_name) {
             return "unknown";   
          }}
 
+// method for drawing count plot about course difficulty. average grade per course is used as a measure of difficulty
 private VBox Course_difficulty() {
     VBox vBox = new VBox();
     
@@ -332,7 +320,7 @@ private VBox Course_difficulty() {
         return vBox;
 
 } 
-
+// update count plot about course difficulty when buttons are pressed
 private void updateDifficulty(String data_name,BarChart<String, Number> barChart, String filter_name ){
         barChart.getData().clear();
         CategoryAxis xAxis = (CategoryAxis) barChart.getXAxis();
@@ -362,6 +350,7 @@ private void updateDifficulty(String data_name,BarChart<String, Number> barChart
         barChart.getData().add(series);
         barChart.layout();
 }
+// method for drawing scatter plot
 private VBox Scatter(Stage stage){
 
         VBox vBox = new VBox();
@@ -412,7 +401,7 @@ private VBox Scatter(Stage stage){
         });
 
         updateScatter(dataSelector.getValue(), scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), line_bool);
-
+        scatterChart.legendVisibleProperty().setValue(false);
 
         filter1ComboBox.setOnAction(e -> updateScatter(dataSelector.getValue(), scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), line_bool));
         filter2ComboBox.setOnAction(e -> updateScatter(dataSelector.getValue(),scatterChart, filter1ComboBox.getValue(), filter2ComboBox.getValue(), line_bool));
@@ -669,6 +658,8 @@ private VBox Scatter(Stage stage){
         ScatterPlotChart scatterPlot = new ScatterPlotChart(scene);
         scatterPlot.start(stage);
     }
+
+    // method to draw joint plot where LineChart is used to show the distribution of categorocal variable
     private VBox JointPlot_line() {
 
     VBox VBox = new VBox();
@@ -761,6 +752,7 @@ private VBox Scatter(Stage stage){
         
 
     }
+    //  method to draw joint plot where BarChart is used to show the distribution of categorocal variable
     private VBox JointPlot_bar() {
         VBox VBox = new VBox();
 
@@ -848,6 +840,8 @@ private VBox Scatter(Stage stage){
         
 
     }
+
+    /// method for updating joint plot for join plot with line chart 
     private void updateJoint(String selectedData, CustomScatterChart scatterChart, LineChart<String, Number> barChart1,  String selectedFilter1, String selectedFilter2, String selectedFilter3 ) {
     double upper_b_x = ((NumberAxis) scatterChart.getXAxis()).getUpperBound();
         double lower_b_x = ((NumberAxis) scatterChart.getXAxis()).getLowerBound();
@@ -914,7 +908,7 @@ private VBox Scatter(Stage stage){
     }
 
     
-
+    /// method for updating joint plot for join plot with bar chart 
     private void updateJoint(String selectedData, CustomScatterChart scatterChart, BarChart<String, Number> barChart1,  String selectedFilter1, String selectedFilter2, String selectedFilter3 ) {
         double upper_b_x = ((NumberAxis) scatterChart.getXAxis()).getUpperBound();
         double lower_b_x = ((NumberAxis) scatterChart.getXAxis()).getLowerBound();
@@ -979,6 +973,7 @@ private VBox Scatter(Stage stage){
 
 
     }
+    // method for updating scatter plot
     private void updateScatter(String selectedData, CustomScatterChart scatterChart, String selectedFilter1, String selectedFilter2, boolean line_bool) {
         Data right_data = new Data();
             for (Data data : dataList) {
@@ -1047,7 +1042,7 @@ private VBox Scatter(Stage stage){
 }
 
 
-/// tables
+/// method to graw tables with correlation, cosine similarity and euclidean distance
     public VBox Table_draw() {
         VBox vBox = new VBox();
 
@@ -1077,6 +1072,7 @@ private VBox Scatter(Stage stage){
 
 
     }
+    /// method for updating tables with correlation, cosine similarity and euclidean distance
     public void updateTable(String selectedData, TableView tbv, String selectedFilter) {
         tbv.getItems().clear();
         tbv.getColumns().clear();
@@ -1126,7 +1122,7 @@ private VBox Scatter(Stage stage){
         }
         
     }
-    /// swarm plot
+    /// method to draw swarm plot 
     public VBox SwarmPlot() {
         VBox vBox = new VBox();
 
@@ -1175,7 +1171,7 @@ private VBox Scatter(Stage stage){
         
         return vBox;
     }
-
+    // method to draw our table with predictions from step 4
     public VBox TablePred() {
         VBox vBox = new VBox();
 
@@ -1222,6 +1218,8 @@ private VBox Scatter(Stage stage){
     
 
     }
+
+    //method for updating filter  in a warm plot (change possible variables when diffrent data is selected)
     public void updateFilter2(ComboBox filter2ComboBox, String selectedData) {
         if(selectedData.equals("Current+StudentInfo")) {
             List<String> newItems = Arrays.asList("Suruna Value", "Hurni Level", "Volta ", "Lal Count");
@@ -1232,6 +1230,8 @@ private VBox Scatter(Stage stage){
             filter2ComboBox.getSelectionModel().selectFirst();
         }
     }
+
+    // method for updating swarm plot when button is pressed
     public void updateSwarm(String selectedData, ScatterChart<Number, Number> scatterChart, String selectedFilter1, String selectedFilter2, ComboBox filter2ComboBox, boolean best) {
         
         Data right_data = new Data();
@@ -1305,35 +1305,14 @@ private VBox Scatter(Stage stage){
         }
 
 
-
+    // main method
     public static void main(String[] args) {
         dataInit();
         launch(args);
     }
 
-    private static void swarmPlot(){
-        VBox swormBox = new VBox();
-        FlowPane filters = new FlowPane();
-        Group swarmPlot = new Group();
-        swormBox.getChildren().addAll(filters, swarmPlot);
-    }
 
-    private static void refreshColumnList(FlowPane filters){ //has a problem when the same column names appear more than once - considers them as different.
-        ArrayList<String> temp = new ArrayList<String>();
-        for(Data data : Main.dataList)
-            for(String s : data.columnNames)
-                temp.add(s);
-        Main.columnList = FXCollections.observableArrayList(temp);
-        System.out.println(Main.columnList);
-        ChoiceBox<String> xAxis = new ChoiceBox<String>(Main.columnList);
-        xAxis.setValue("------------");
-        ChoiceBox<String> yAxis = new ChoiceBox<String>(Main.columnList);
-        yAxis.setValue("------------");
-        filters.getChildren().remove(0);
-        filters.getChildren().add(0, xAxis);
-        filters.getChildren().remove(1);
-        filters.getChildren().add(1, yAxis);
-    }
+    /// initialize our basic datasets to use them in the programm
     private static void dataInit(){
     
         ///Statically import data
