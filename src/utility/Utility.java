@@ -2,7 +2,7 @@ package utility;
 import java.util.List;
 
 import data.Data;
-import prediction.DecisionStumpFactory;
+import prediction.deprecated.DecisionStumpFactory;
 
 public abstract class Utility {
     public static void main(String[] args) {
@@ -32,7 +32,7 @@ public abstract class Utility {
                 sumXX += data.data[i][columnIndex1] * data.data[i][columnIndex1];
             }
         line[0] = (non_ng_students_count * sumXY - sumX * sumY) / (non_ng_students_count * sumXX - sumX * sumX);
-        line[1] = (sumY - line[0] * sumX) / non_ng_students_count;
+        line[1] = (sumY - line[0] * sumX) / non_ng_students_count;   
         return line;
     }
 

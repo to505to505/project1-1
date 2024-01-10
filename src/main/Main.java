@@ -2,6 +2,9 @@ package main;
 
 import data.*;
 import prediction.*;
+import prediction.deprecated.DS;
+import prediction.deprecated.DSCat;
+import prediction.deprecated.DecisionStumpFactory;
 import charts.*;
 import utility.*;
 
@@ -1293,9 +1296,7 @@ private VBox Scatter(Stage stage){
             
             scatterChart.getData().add(series);
 
-            scatterChart.layout(); 
-
-
+            scatterChart.layout();
         }
 
 

@@ -1,6 +1,8 @@
 package AdditionalPlotClasses;
 import javafx.scene.chart.NumberAxis;
-import prediction.*;    
+import prediction.*;
+import prediction.deprecated.DS;
+import prediction.deprecated.DSCat_old;    
 
 public class CatTickLabelFormatter extends NumberAxis.DefaultFormatter {
     public String[] courses_names;

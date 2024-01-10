@@ -1,6 +1,7 @@
 package AdditionalPlotClasses;
 import javafx.scene.chart.NumberAxis;
 import prediction.*;
+import prediction.deprecated.DS;
 
 
 public class NumTickLabelFormatter extends NumberAxis.DefaultFormatter {
