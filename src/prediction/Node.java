@@ -10,6 +10,10 @@ public class Node implements INode{
         this.parent = parent;
     }
 
+    public Node(){
+        this.parent = null;
+    }
+
     public Node getParent(){
         return parent;
     }

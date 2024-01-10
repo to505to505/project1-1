@@ -17,6 +17,8 @@ public abstract class Utility {
         System.out.println("Cor: " + cor + ", R2: " + cor*cor);
         System.out.println(weightedEuclideanDistance(bugData, 1, linearRegressionLinePrediction(bugData, 0, line)));
         //System.out.println(weightedEuclideanDistance(bugData, 1, singleStumpPrediction(bugData, 1)));
+
+        
     }
 
     public static double[] linearRegressionLine(Data data, int columnIndex1, int columnIndex2) {

@@ -1,4 +1,4 @@
-package prediction;
+package prediction.deprecated;
 
 import java.util.ArrayList;
 import data.*;
