@@ -13,7 +13,7 @@ import utility.Combinations;
  * It also computes the mean squared error of the split.
  * It makes use of a DataPartition object to store the data partition.
  */
-public class DSNum {
+public class DSNum extends DecisionStump {
     
     private int courseIndex;
     private int targetIndex;
@@ -49,10 +49,105 @@ public class DSNum {
         initialVariance /= count - 1;
 
         //Finds the best set of thresholds to split the given course in order to maximize the variance reduction on the target
-        findBestNSplit(dataPartition, courseIndex, targetIndex, 1);
+        if(courseIndex == 30 || courseIndex == 31 || courseIndex == 33)
+            categoricalSplit();
+        else
+            findBestNSplit(dataPartition, courseIndex, targetIndex, 2);
     }
 
-    p
+    private void categoricalSplit(){        
+        ArrayList<Double> values = dataPartition.getValuesVector(courseIndex);
+      
+        //Get split thresholds
+        ArrayList<Double> thresholds = new ArrayList<Double>();
+        for(int i = 1; i < values.size(); i++)
+            thresholds.add((values.get(i) + values.get(i - 1)) / 2);
+        //System.out.print(values); System.out.println(thresholds);
+        
+        //Stores branch properties
+        ArrayList<double[]> branches = new ArrayList<double[]>();
+        
+        //Compute the properties of the first branch
+        int count = 0; double mean = 0, variance = 0;
+        for(int j : dataPartition.studentIndexes) {
+            if(dataPartition.data.data[j][courseIndex] < thresholds.get(0)) {
+                count++;
+                mean += dataPartition.data.data[j][targetIndex];
+            }
+        } mean /= count;
+        for(int j : dataPartition.studentIndexes) {
+            if(dataPartition.data.data[j][courseIndex] < thresholds.get(0)) {
+                variance += Math.pow(dataPartition.data.data[j][targetIndex] - mean, 2);
+            }
+        } variance /= count - 1;
+        //add properties to branch arraylist
+        double[] branch = {count, mean, variance};
+        //System.out.println(Arrays.toString(branch));
+        branches.add(branch); 
+
+        //Compute the properties of the middle branches
+        for(int i = 1; i < thresholds.size(); i++){ //for each branch
+            count = 0; mean = 0; variance = 0;
+            for(int j : dataPartition.studentIndexes) {
+                if(dataPartition.data.data[j][courseIndex] >= thresholds.get(i-1) && dataPartition.data.data[j][courseIndex] < thresholds.get(i)) {
+                    count++;
+                    mean += dataPartition.data.data[j][targetIndex];
+                }
+            } mean /= count;
+            for(int j : dataPartition.studentIndexes) {
+                if(dataPartition.data.data[j][courseIndex] >= thresholds.get(i-1) && dataPartition.data.data[j][courseIndex] < thresholds.get(i)) {
+                    variance += Math.pow(dataPartition.data.data[j][targetIndex] - mean, 2);
+                }
+            } variance /= count - 1;
+            //add properties to branch arraylist
+            branch = new double[3];
+            branch[0] = count; branch[1] = mean; branch[2] = variance;
+            //System.out.println(Arrays.toString(branch));
+            branches.add(branch); 
+        }
+
+        //compute the properties of the last branch
+        count = 0; mean = 0; variance = 0;
+        for(int j : dataPartition.studentIndexes) {
+            if(dataPartition.data.data[j][courseIndex] >= thresholds.get(thresholds.size()-1)) {
+                count++;
+                mean += dataPartition.data.data[j][targetIndex];
+            }
+        } mean /= count;
+        for(int j : dataPartition.studentIndexes) {
+            if(dataPartition.data.data[j][courseIndex] >= thresholds.get(thresholds.size()-1)) {
+                variance += Math.pow(dataPartition.data.data[j][targetIndex] - mean, 2);
+            }
+        } variance /= count - 1; //count - 1 because we are estimating the variance of the population from the sample
+        //add properties to branch arraylist
+        branch = new double[3];
+        branch[0] = count; branch[1] = mean; branch[2] = variance;
+        //System.out.println(Arrays.toString(branch));
+        branches.add(branch);             
+
+        double varianceReduction = 0;
+        for (double[] br : branches) {
+            double temp = br[0]/dataPartition.studentIndexes.size();
+            varianceReduction += temp * br[2]; //branch variance weighted by percentage of students in branch
+        }
+
+        //If the split has a higher variance reduction than the current best split, replace the current best split
+        if(varianceReduction >= this.varianceReduction) {
+            this.finalVariance = initialVariance - varianceReduction;
+            this.varianceReduction = varianceReduction;
+            
+            this.thresholds = thresholds;
+            this.branchProperties = branches;
+        }
+
+        /*//print each split
+        this.finalVariance = initialVariance - varianceReduction;
+        this.varianceReduction = varianceReduction;
+        this.thresholds = thresholds;
+        this.branchProperties = branches;  
+        System.out.println(this);
+        */
+    }
 
     /**
      * Find the best n splits for the given course and target
@@ -138,13 +233,13 @@ public class DSNum {
                 if(dataPartition.data.data[j][courseIndex] >= thresholds.get(thresholds.size()-1)) {
                     variance += Math.pow(dataPartition.data.data[j][targetIndex] - mean, 2);
                 }
-            } variance /= count - 1;
+            } variance /= count - 1; //count - 1 because we are estimating the variance of the population from the sample
             //add properties to branch arraylist
             branch = new double[3];
             branch[0] = count; branch[1] = mean; branch[2] = variance;
             //System.out.println(Arrays.toString(branch));
             branches.add(branch);             
-            
+
             double varianceReduction = 0;
             for (double[] br : branches) {
                 double temp = br[0]/dataPartition.studentIndexes.size();
@@ -160,13 +255,13 @@ public class DSNum {
                 this.branchProperties = branches;
             }
 
-            /*//print each split
+            ///*//print each split
             this.finalVariance = initialVariance - varianceReduction;
             this.varianceReduction = varianceReduction;
             this.thresholds = thresholds;
             this.branchProperties = branches;  
             System.out.println(this);
-            */
+            //*/
         }
     }
 
@@ -191,7 +286,7 @@ public class DSNum {
                 s += "Branch " + i + ": <" + thresholds.get(i-1) + " - " + thresholds.get(i) +"> " + Arrays.toString(branchProperties.get(i)) + "\n";
         }
         s+= "Total row count: " + dataPartition.studentIndexes.size() + "\n";
-        s+= "Mean Squared Error: " + MSE();
+        s+= "Mean Absolute Error: " + MAE();
         return s;
     }
 
@@ -208,9 +303,9 @@ public class DSNum {
             else if(dataPartition.data.data[dataPartition.studentIndexes.get(i)][courseIndex] > thresholds.get(thresholds.size() - 1))
                 prediction = branchProperties.get(thresholds.size())[1];
             else{
-                for(int j = 0; j < thresholds.size(); j++){
+                for(int j = 1; j < thresholds.size(); j++){
                     if(dataPartition.data.data[dataPartition.studentIndexes.get(i)][courseIndex] <= thresholds.get(j)){
-                        prediction = branchProperties.get(j+1)[1];
+                        prediction = branchProperties.get(j)[1];
                         break;
                     }
                 }
@@ -221,23 +316,48 @@ public class DSNum {
     }
 
     /**
+     * Returns the mean absolute error of the split.
+     * It computes the prediction for each student in the data partition as the average of the grades in the branch, and compares it to the actual grade.
+     * @return
+     */
+    public double MAE(){
+        double absEr = 0, prediction = 0;
+        for(int i = 0; i < dataPartition.studentIndexes.size(); i++){
+            if(dataPartition.data.data[dataPartition.studentIndexes.get(i)][courseIndex] <= thresholds.get(0))
+                prediction = branchProperties.get(0)[1];
+            else if(dataPartition.data.data[dataPartition.studentIndexes.get(i)][courseIndex] > thresholds.get(thresholds.size() - 1))
+                prediction = branchProperties.get(thresholds.size())[1];
+            else{
+                for(int j = 1; j < thresholds.size(); j++){
+                    if(dataPartition.data.data[dataPartition.studentIndexes.get(i)][courseIndex] <= thresholds.get(j)){
+                        prediction = branchProperties.get(j)[1];
+                        break;
+                    }
+                }
+            }
+            absEr += Math.abs(dataPartition.data.data[dataPartition.studentIndexes.get(i)][targetIndex] - prediction);
+        }
+        return absEr/dataPartition.studentIndexes.size();
+    }
+
+    /**
      * Test method
      * @param args
      */
     public static void main(String[] args) { //!TSO-010 12/10, PLO-132 18/16, BKO-801 21/19
 
         Data data = new Data(new AggregateData("data/CurrentGrades.csv", "data/StudentInfo.csv"));
-        DSNum ds = new DSNum(data, 1, 13);
+        DSNum ds = new DSNum(data, 32, 13);
         System.out.println(ds);
         /*for(int i = 0; i < data.columnNames.length; i++){
             for(int j = 0; j < data.columnNames.length; j++){
                 if(i != 10 && j != 10 && i != 16 && j != 16 && i != 19 && j != 19){
-                    DSNum ds = new DSNum(data, i, j);
-                    System.out.println(ds);
+                    DSNum da = new DSNum(data, i, j);
+                    System.out.println(da);
                 }
             }
             System.out.println();
-        }*/
-        
+        }
+        */
     }
 }

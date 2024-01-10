@@ -65,6 +65,33 @@ public class DataPartition {
      * @return
      */
     public ArrayList<Double> getValuesVector(int courseIndex){
+
+    if (courseIndex == 30 || courseIndex == 31 || courseIndex == 33) {
+            switch (courseIndex) {
+                case 30:
+                    ArrayList<Double> values = new ArrayList<>();
+                    values.add(0.0);
+                    values.add(1.0);
+                    values.add(2.0);
+                    return values;
+                case 31:
+                    ArrayList<Double> values1 = new ArrayList<>();
+                    values1.add(0.0);
+                    values1.add(1.0);
+                    values1.add(2.0);
+                    values1.add(3.0);
+                    values1.add(4.0);
+                    return values1;
+                case 33:
+                    ArrayList<Double> values2 = new ArrayList<>();
+                    values2.add(1.0);
+                    values2.add(2.0);
+                    values2.add(3.0);
+                    values2.add(4.0);
+                    values2.add(5.0);
+                    return values2;
+            };
+        }
         ArrayList<Double> values = new ArrayList<Double>();
         
         boolean[] freq;
@@ -80,7 +107,7 @@ public class DataPartition {
             if(freq[i])
                 values.add((double)i);
         }
-        
+
         return values;
     }
 
