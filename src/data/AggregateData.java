@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import exceptions.PercentageOutOfRange;
@@ -15,6 +16,8 @@ public class AggregateData extends Data {
 
     public String[] infoColumnNames;
     public double[][] infoData;
+
+    public HashMap<String, Integer> infoColumnIndices = new HashMap<String, Integer>();
 
     /**
      * Constructor reading files of tables with matching student ID columns (the order of student IDs).
@@ -88,6 +91,9 @@ public class AggregateData extends Data {
             }
 
             fileScanner.close();
+
+            for(int j = 0; j < infoColumnNames.length; j++)
+                columnIndices.put(columnNames[j], j);
 
         } catch(IOException exc){ //catch exceptions such as FileNotFound
             System.out.println(exc);

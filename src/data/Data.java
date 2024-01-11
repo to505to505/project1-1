@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -26,6 +27,8 @@ public class Data {
     public int[] studentIDs;
     public double[][] data;
     public String name;
+
+    public HashMap<String, Integer> columnIndices = new HashMap<String, Integer>();
 
     private static final long SAMPLE_SEED = 1617316862; //RNG seed used to create forest samples
     private static final long SHUFFLE_SEED = SAMPLE_SEED+1; //RNG seed used to shuffle data before splitting it
@@ -126,6 +129,9 @@ public class Data {
                 data[i] = tempData.get(i);
             
             fileScanner.close();
+
+            for(int i = 0; i < columnNames.length; i++)
+                columnIndices.put(columnNames[i], i);
             
         } catch(IOException exc){ //catch exceptions such as FileNotFound
             System.out.println(exc);
@@ -191,6 +197,11 @@ public class Data {
             System.arraycopy(aggregateData.data[i], 0, data[i], 0, aggregateData.columnNames.length);
             System.arraycopy(aggregateData.infoData[i], 0, data[i], aggregateData.columnNames.length, aggregateData.infoColumnNames.length);
         }
+
+        /// Create new columnIndices
+        columnIndices = new HashMap<String, Integer>();
+        for(int i = 0; i < columnNames.length; i++)
+            columnIndices.put(columnNames[i], i);
     }
 
 
