@@ -26,10 +26,12 @@ public class DecisionStump extends Node implements IDecisionStump {
     private int targetIndex;
 
     private DataPartition dataPartition;
+    //remember to first call computeChildrenDataPartitions() before calling getChildrenDataPartitions()
+    private ArrayList<DataPartition> childrenDataPartitions;
 
-    private double initialVariance = 0;
+    private double initialVariance;
     private double varianceReduction = 0;
-    private double finalVariance = 0;
+    private double finalVariance;
     private double informationGain = 0;
 
     private ArrayList<Double> thresholds;
@@ -48,6 +50,19 @@ public class DecisionStump extends Node implements IDecisionStump {
         Data data = new Data(new AggregateData("data/CurrentGrades.csv", "data/StudentInfo.csv"));
         DecisionStump ds = new DecisionStump(data, 31, 1);
         System.out.println(ds);
+        ds.computeChildrenDataPartitions();
+        boolean[] freq = new boolean[1128];
+        System.out.println(ds.dataPartition.studentIndexes.size());
+        for(DataPartition p : ds.getChildrenDataPartitions())
+            for(int i = 0; i < p.studentIndexes.size(); i++){
+                if(freq[p.studentIndexes.get(i)])
+                    System.out.println("Duplicate");
+                freq[p.studentIndexes.get(i)] = true;
+            }
+        for (DataPartition dp : ds.getChildrenDataPartitions())
+            System.out.println(dp.studentIndexes.size());
+        
+        /*
         for(int i = 0; i < data.columnNames.length-4; i++){
             for(int j = 0; j < data.columnNames.length-4; j++){
                 if(i != 10 && j != 10 && i != 16 && j != 16 && i != 19 && j != 19){
@@ -57,13 +72,48 @@ public class DecisionStump extends Node implements IDecisionStump {
             }
             System.out.println();
         }
-        
+        */
     }
 
+    /**
+     * Constructs a decision stump that finds the best split for a target feature given a DataPartition, and stores the split thresholds and branch properties.
+     * @param dataPartition
+     * @param targetIndex
+     */
+    public DecisionStump(DataPartition dataPartition, int targetIndex) {
+        super();
+
+        this.targetIndex = targetIndex;
+
+        this.dataPartition = dataPartition;
+
+        double mean = 0; int count = 0;
+        for(int i : dataPartition.studentIndexes){
+            count++;
+            mean += dataPartition.data.data[i][targetIndex];
+        }
+        mean /= count;
+
+        for(int i : dataPartition.studentIndexes)
+            initialVariance += Math.pow(dataPartition.data.data[i][targetIndex] - mean, 2);
+        initialVariance /= count - 1;
+
+        //Finds the best set of thresholds to split the given course in order to maximize the variance reduction on the target
+        for(int i : dataPartition.courseIndexes)
+        findBestNSplit(dataPartition, i, targetIndex, STUMP_WIDTH -1);
+    }
+
+    /**
+     * Constructs a decision stump that finds the best split for a given course and target, and stores the split thresholds and branch properties.
+     * It also computes the mean absolute error of the split.
+     * It makes use of a DataPartition object to store the data partition.
+     * @param data
+     * @param courseIndex
+     * @param targetIndex
+     */
     public DecisionStump(Data data, int courseIndex, int targetIndex){
         super();
 
-        this.courseIndex = courseIndex;
         this.targetIndex = targetIndex;
 
         thresholds = new ArrayList<Double>();
@@ -84,12 +134,12 @@ public class DecisionStump extends Node implements IDecisionStump {
 
         //Finds the best set of thresholds to split the given course in order to maximize the variance reduction on the target
         if(courseIndex == 30 || courseIndex == 31 || courseIndex == 33)
-            categoricalSplit();
+            categoricalSplit(courseIndex);
         else
             findBestNSplit(dataPartition, courseIndex, targetIndex, STUMP_WIDTH -1 );
     }
 
-    private void categoricalSplit(){        
+    private void categoricalSplit(int courseIndex){        
         ArrayList<Double> values = dataPartition.getValuesVector(courseIndex);
       
         //Get split thresholds
@@ -99,7 +149,7 @@ public class DecisionStump extends Node implements IDecisionStump {
         //System.out.print(values); System.out.println(thresholds);
         
         //Stores branch properties
-        ArrayList<ArrayList<Double>> branches = computeBranchProperties(thresholds);            
+        ArrayList<ArrayList<Double>> branches = computeBranchProperties(thresholds, courseIndex);            
 
         double varianceReduction = initialVariance;
         for (ArrayList<Double> br : branches) {
@@ -112,6 +162,7 @@ public class DecisionStump extends Node implements IDecisionStump {
         this.finalVariance = initialVariance - varianceReduction;
         this.varianceReduction = varianceReduction;
         
+        this.courseIndex = courseIndex;
         this.thresholds = thresholds;
         this.branchProperties = branches;
 
@@ -163,7 +214,7 @@ public class DecisionStump extends Node implements IDecisionStump {
             //System.out.print(Arrays.toString(split)); System.out.print(values); System.out.println(thresholds);
             
             //Compute the properties of each branch
-            ArrayList<ArrayList<Double>> branches = computeBranchProperties(thresholds);
+            ArrayList<ArrayList<Double>> branches = computeBranchProperties(thresholds, courseIndex);
 
             double varianceReduction = initialVariance;
             for (ArrayList<Double> br : branches) {
@@ -178,6 +229,7 @@ public class DecisionStump extends Node implements IDecisionStump {
                 this.finalVariance = initialVariance - varianceReduction;
                 this.varianceReduction = varianceReduction;
                 
+                this.courseIndex = courseIndex;
                 this.thresholds = thresholds;
                 this.branchProperties = branches;
 
@@ -199,7 +251,7 @@ public class DecisionStump extends Node implements IDecisionStump {
         }
     }
 
-    public ArrayList<ArrayList<Double>> computeBranchProperties(ArrayList<Double> thresholds) {
+    public ArrayList<ArrayList<Double>> computeBranchProperties(ArrayList<Double> thresholds, int courseIndex) {
         //Stores branch properties
         ArrayList<ArrayList<Double>> branches = new ArrayList<ArrayList<Double>>();
         
@@ -372,6 +424,26 @@ public class DecisionStump extends Node implements IDecisionStump {
             }
         this.entropy = entropy;
         this.informationGain = informationGain;
+    }
+
+    public void computeChildrenDataPartitions() {
+
+        childrenDataPartitions = new ArrayList<DataPartition>();
+
+        childrenDataPartitions.add(new DataPartition(dataPartition, (double[] row) -> {return row[courseIndex] >= 0 && row[courseIndex] < thresholds.get(0);}));
+        
+        for (int i = 1; i < thresholds.size(); i++){
+            final int j = i;
+            childrenDataPartitions.add(new DataPartition(dataPartition, (double[] row) -> {return row[courseIndex] >= thresholds.get(j-1) && row[courseIndex] < thresholds.get(j);}));
+        }
+
+        childrenDataPartitions.add(new DataPartition(dataPartition, (double[] row) -> {return row[courseIndex] >= thresholds.get(thresholds.size()-1);}));
+    }
+
+    public ArrayList<DataPartition> getChildrenDataPartitions() {
+        if (childrenDataPartitions == null)
+            computeChildrenDataPartitions();
+        return childrenDataPartitions;
     }
 
     public Node getParent(){

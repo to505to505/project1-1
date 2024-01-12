@@ -44,6 +44,29 @@ public class DataPartition {
             courseIndexes.add(i);
     }
 
+    public DataPartition(DataPartition dataPartition, Condition condition){
+        this.data = dataPartition.data;
+        studentIndexes = new ArrayList<Integer>();
+        for(int i = 0; i < dataPartition.studentIndexes.size(); i++)
+            if(condition.compare(data.data[dataPartition.studentIndexes.get(i)]))
+                studentIndexes.add(i);
+        courseIndexes = new ArrayList<Integer>();
+        for(int i = 0; i < dataPartition.courseIndexes.size(); i++)
+            courseIndexes.add(i);
+    }
+
+    public DataPartition(DataPartition dataPartition, Condition condition1, Condition condition2){
+        this.data = dataPartition.data;
+        studentIndexes = new ArrayList<Integer>();
+        for(int i = 0; i < dataPartition.studentIndexes.size(); i++)
+            if(condition1.compare(data.data[dataPartition.studentIndexes.get(i)]))
+                studentIndexes.add(i);
+        courseIndexes = new ArrayList<Integer>();
+        for(int i = 0; i < dataPartition.courseIndexes.size(); i++)
+            if(condition2.compare(data.data[dataPartition.courseIndexes.get(i)]))
+                courseIndexes.add(i);
+    }
+
     public DataPartition(AggregateData data, Condition condition1, Condition condition2){
         this.aggregateData = data;
         studentIndexes = new ArrayList<Integer>();
