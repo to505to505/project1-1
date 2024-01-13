@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "DecisionTree",
+            "request": "launch",
+            "mainClass": "prediction.DecisionTree",
+            "projectName": "plots_b5ad89ff"
+        },
+        {
+            "type": "java",
             "name": "DecisionStump",
             "request": "launch",
             "mainClass": "prediction.DecisionStump",

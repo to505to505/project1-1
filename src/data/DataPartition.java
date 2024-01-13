@@ -81,6 +81,36 @@ public class DataPartition {
             infoIndexes.add(i);
     }
 
+
+    public ArrayList<Double> getCategoryVector(int courseIndex){
+        switch (courseIndex) {
+            case 30:
+                ArrayList<Double> values = new ArrayList<>();
+                values.add(0.0);
+                values.add(1.0);
+                values.add(2.0);
+                return values;
+            case 31:
+                ArrayList<Double> values1 = new ArrayList<>();
+                values1.add(0.0);
+                values1.add(1.0);
+                values1.add(2.0);
+                values1.add(3.0);
+                values1.add(4.0);
+                return values1;
+            case 33:
+                ArrayList<Double> values2 = new ArrayList<>();
+                values2.add(1.0);
+                values2.add(2.0);
+                values2.add(3.0);
+                values2.add(4.0);
+                values2.add(5.0);
+                return values2;
+            default:
+                return getValuesVector(courseIndex);
+        }
+    }
+
     /**
      * Returns a sorted ArrayList of the individual values of students for a feature.
      * It makes use of a frequency vector and has an optimization for differentiating between a course and the Lal count feature (which has a range of >10-100).
@@ -89,42 +119,17 @@ public class DataPartition {
      */
     public ArrayList<Double> getValuesVector(int courseIndex){
 
-    if (courseIndex == 30 || courseIndex == 31 || courseIndex == 33) {
-            switch (courseIndex) {
-                case 30:
-                    ArrayList<Double> values = new ArrayList<>();
-                    values.add(0.0);
-                    values.add(1.0);
-                    values.add(2.0);
-                    return values;
-                case 31:
-                    ArrayList<Double> values1 = new ArrayList<>();
-                    values1.add(0.0);
-                    values1.add(1.0);
-                    values1.add(2.0);
-                    values1.add(3.0);
-                    values1.add(4.0);
-                    return values1;
-                case 33:
-                    ArrayList<Double> values2 = new ArrayList<>();
-                    values2.add(1.0);
-                    values2.add(2.0);
-                    values2.add(3.0);
-                    values2.add(4.0);
-                    values2.add(5.0);
-                    return values2;
-            };
-        }
         ArrayList<Double> values = new ArrayList<Double>();
         
         boolean[] freq;
-        if(data.data[studentIndexes.get(0)][courseIndex] > 10)
+        if(courseIndex == 32)
             freq = new boolean[101];
         else
             freq = new boolean[11];
     
         for(int i = 0; i < studentIndexes.size(); i++){
-            freq[(int)data.data[studentIndexes.get(i)][courseIndex]] = true;
+            if(data.data[studentIndexes.get(i)][courseIndex] >= 0)
+                freq[(int)data.data[studentIndexes.get(i)][courseIndex]] = true;
         }
         for(int i = 0; i < freq.length; i++){
             if(freq[i])

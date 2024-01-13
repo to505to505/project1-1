@@ -13,6 +13,6 @@ public interface INode {
         return getChildren().size() > 0;
     }
     public default boolean isLeaf(){
-        return getChildren().size() == 0;
+        return getChildren() == null || getChildren().size() == 0;
     }
 }

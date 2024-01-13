@@ -1,6 +1,10 @@
 package prediction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Collection;
+import java.util.Collections;
 
 import data.*;
 import utility.Combinations;
@@ -14,10 +18,10 @@ import utility.Combinations;
  */
 public class DecisionStump extends Node implements IDecisionStump {
 
+
     private static final int STUMP_WIDTH = 3; //number of branches //does not influence categorical splits
     
     private Node parent;
-    private ArrayList<Node> children;
 
     private String name;
     private int colIndex;
@@ -25,21 +29,29 @@ public class DecisionStump extends Node implements IDecisionStump {
     private int courseIndex;
     private int targetIndex;
 
-    private DataPartition dataPartition;
     //remember to first call computeChildrenDataPartitions() before calling getChildrenDataPartitions()
     private ArrayList<DataPartition> childrenDataPartitions;
 
     private double initialVariance;
     private double varianceReduction = 0;
     private double finalVariance;
+
     private double informationGain = 0;
+
+    private double initialMAE;
+    private double maeReduction = 0; 
+    private double finalMAE;
 
     private ArrayList<Double> thresholds;
     private ArrayList<ArrayList<Double>> branchProperties; // [0] =count , [1] = mean, [2] = variance
     private int[][] rightPredictions;
     private double[] entropy;
 
-    private double MAE;
+
+    // select which functions we use to find best split
+    public String branchFunction = "mse";
+
+
 
     /**
      * Test method
@@ -51,16 +63,6 @@ public class DecisionStump extends Node implements IDecisionStump {
         DecisionStump ds = new DecisionStump(data, 31, 1);
         System.out.println(ds);
         ds.computeChildrenDataPartitions();
-        boolean[] freq = new boolean[1128];
-        System.out.println(ds.dataPartition.studentIndexes.size());
-        for(DataPartition p : ds.getChildrenDataPartitions())
-            for(int i = 0; i < p.studentIndexes.size(); i++){
-                if(freq[p.studentIndexes.get(i)])
-                    System.out.println("Duplicate");
-                freq[p.studentIndexes.get(i)] = true;
-            }
-        for (DataPartition dp : ds.getChildrenDataPartitions())
-            System.out.println(dp.studentIndexes.size());
         
         /*
         for(int i = 0; i < data.columnNames.length-4; i++){
@@ -100,7 +102,115 @@ public class DecisionStump extends Node implements IDecisionStump {
 
         //Finds the best set of thresholds to split the given course in order to maximize the variance reduction on the target
         for(int i : dataPartition.courseIndexes)
-        findBestNSplit(dataPartition, i, targetIndex, STUMP_WIDTH -1);
+            if(i != targetIndex)
+                if(true && i == 30 || i == 31 || i == 33)
+                    categoricalSplit(i);
+                else
+                    findBestNSplit(dataPartition, i, targetIndex, STUMP_WIDTH -1);
+    }
+
+    /**
+     * Constructs a decision stump that finds the best random split for a target feature given a DataPartition, and stores the split thresholds and branch properties.
+     * The random split is a random subset of the target features in the data partition.
+     * whether the problem is regression or classification, the amount of features considered changes from n/3 for a regression problem to sqrt(n) for a classification one.
+     * @param dataPartition
+     * @param targetIndex
+     * @param problemType true if the problem is regression, false if it is classification
+     */
+    public DecisionStump(DataPartition dataPartition, int targetIndex, boolean problemType) {
+        super();
+
+        this.targetIndex = targetIndex;
+
+        this.dataPartition = dataPartition;
+
+        double mean = 0; int count = 0;
+        for(int i : dataPartition.studentIndexes){
+            count++;
+            mean += dataPartition.data.data[i][targetIndex];
+        }
+        mean /= count;
+
+        for(int i : dataPartition.studentIndexes)
+            initialVariance += Math.pow(dataPartition.data.data[i][targetIndex] - mean, 2);
+        initialVariance /= count - 1;
+
+        int featureCount;
+        if(problemType)
+            featureCount = dataPartition.courseIndexes.size()/3;
+        else
+            featureCount = (int)Math.sqrt(dataPartition.courseIndexes.size());
+            
+        ArrayList<Integer> featureIndexes = new ArrayList<Integer>();
+        Random rand = new Random();
+        for(int i = 0; i < featureCount; i++)
+            featureIndexes.add(dataPartition.studentIndexes.get(rand.nextInt(dataPartition.courseIndexes.size())));
+
+        //Finds the best set of thresholds to split the given course in order to maximize the variance reduction on the target
+        for(int i : dataPartition.courseIndexes)
+            if(i != targetIndex)
+                if(true && i == 30 || i == 31 || i == 33)
+                    categoricalSplit(i);
+                else
+                    findBestNSplit(dataPartition, i, targetIndex, STUMP_WIDTH -1);
+    }
+
+    /**
+     * Constructs a decision stump that finds the best random split for a target feature given a DataPartition, and stores the split thresholds and branch properties.
+     * The random split is a random subset of the target features in the data partition.
+     * whether the problem is regression or classification, the amount of features considered changes from n/3 for a regression problem to sqrt(n) for a classification one.
+     * @param dataPartition
+     * @param targetIndex
+     * @param problemType true if the problem is regression, false if it is classification
+     * @param branch_function the function which will select the best split ("mse" or "mae" for regression problem; "entropy" or "gini" for classification problem)
+     */
+    public DecisionStump(DataPartition dataPartition, int targetIndex, boolean problemType, String branchFunction) {
+        super();
+
+        this.targetIndex = targetIndex;
+        this.branchFunction = branchFunction;
+        this.dataPartition = dataPartition;
+
+        // we need this array list to calculate median
+        ArrayList<Double> gradesForACourse = new ArrayList<>();
+
+        double mean = 0; int count = 0; double median = 0; 
+        for(int i : dataPartition.studentIndexes){
+            count++;
+            mean += dataPartition.data.data[i][targetIndex];
+            gradesForACourse.add(dataPartition.data.data[i][targetIndex]);
+        }
+        mean /= count;
+        median = gradesForACourse.get(count/2);
+
+        for(int i : dataPartition.studentIndexes) { 
+            initialVariance += Math.pow(dataPartition.data.data[i][targetIndex] - mean, 2);
+            initialMAE += Math.abs(dataPartition.data.data[i][targetIndex]- median);
+        }  
+        initialVariance /= count - 1;
+        initialMAE /= count ;
+
+
+        
+       
+
+        int featureCount;
+        if(problemType)
+            featureCount = dataPartition.courseIndexes.size()/3;
+        else
+            featureCount = (int)Math.sqrt(dataPartition.courseIndexes.size());
+            
+        ArrayList<Integer> featureIndexes = new ArrayList<Integer>();
+        Random rand = new Random();
+        for(int i = 0; i < featureCount; i++)
+            featureIndexes.add(dataPartition.studentIndexes.get(rand.nextInt(dataPartition.courseIndexes.size())));
+
+        //Finds the best set of thresholds to split the given course in order to maximize the variance reduction on the target
+        for(int i : dataPartition.courseIndexes)
+            if(true && i == 30 || i == 31 || i == 33)
+                categoricalSplit(i);
+            else
+                findBestNSplit(dataPartition, i, targetIndex, STUMP_WIDTH -1);
     }
 
     /**
@@ -133,14 +243,14 @@ public class DecisionStump extends Node implements IDecisionStump {
         initialVariance /= count - 1;
 
         //Finds the best set of thresholds to split the given course in order to maximize the variance reduction on the target
-        if(courseIndex == 30 || courseIndex == 31 || courseIndex == 33)
+        if(true && courseIndex == 30 || courseIndex == 31 || courseIndex == 33)
             categoricalSplit(courseIndex);
         else
             findBestNSplit(dataPartition, courseIndex, targetIndex, STUMP_WIDTH -1 );
     }
 
     private void categoricalSplit(int courseIndex){        
-        ArrayList<Double> values = dataPartition.getValuesVector(courseIndex);
+        ArrayList<Double> values = dataPartition.getCategoryVector(courseIndex);
       
         //Get split thresholds
         ArrayList<Double> thresholds = new ArrayList<Double>();
@@ -159,15 +269,17 @@ public class DecisionStump extends Node implements IDecisionStump {
         }
 
         //If the split has a higher variance reduction than the current best split, replace the current best split
-        this.finalVariance = initialVariance - varianceReduction;
-        this.varianceReduction = varianceReduction;
-        
-        this.courseIndex = courseIndex;
-        this.thresholds = thresholds;
-        this.branchProperties = branches;
+        if(varianceReduction > this.varianceReduction) {
+            this.finalVariance = initialVariance - varianceReduction;
+            this.varianceReduction = varianceReduction;
+            
+            this.courseIndex = courseIndex;
+            this.thresholds = thresholds;
+            this.branchProperties = branches;
 
-        rightPredictions(thresholds);
-        computeEntropy();
+            rightPredictions(thresholds);
+            computeEntropy();
+        }
                 
 
         /*//print each split
@@ -192,11 +304,11 @@ public class DecisionStump extends Node implements IDecisionStump {
      * @param targetIndex
      * @param n
      */
-    private void findBestNSplit(DataPartition part, int courseIndex, int targetIndex, int n){
+    private void findBestNSplit(DataPartition part, int courseIndex, int targetIndex, int n ){
         // Get the frequency vector of grades for the course
         ArrayList<Double> values = dataPartition.getValuesVector(courseIndex);
 
-        boolean ok = true; //use the first split as a baseline
+        //boolean ok = true; //use the first split as a baseline //maybe not
         
         //check edge case
         if (n >= values.size())
@@ -215,19 +327,23 @@ public class DecisionStump extends Node implements IDecisionStump {
             
             //Compute the properties of each branch
             ArrayList<ArrayList<Double>> branches = computeBranchProperties(thresholds, courseIndex);
+            
+            double varianceReductionIteration = initialVariance;
+            double maeReductionIteration = initialMAE;
+            
 
-            double varianceReduction = initialVariance;
+            if(branchFunction.equals("mse")) { 
             for (ArrayList<Double> br : branches) {
                 if(Double.isNaN(br.get(2)))
                     continue;
-                varianceReduction -= br.get(0)/dataPartition.studentIndexes.size() * br.get(2); //branch variance weighted by percentage of students in branch
+                varianceReductionIteration -= br.get(0)/dataPartition.studentIndexes.size() * br.get(2); //branch variance weighted by percentage of students in branch
             }
 
             //If the split has a higher variance reduction than the current best split, replace the current best split
-            if(varianceReduction > this.varianceReduction || ok) {
+            if(varianceReductionIteration > this.varianceReduction) {
                 
-                this.finalVariance = initialVariance - varianceReduction;
-                this.varianceReduction = varianceReduction;
+                this.finalVariance = initialVariance - varianceReductionIteration;
+                this.varianceReduction = varianceReductionIteration;
                 
                 this.courseIndex = courseIndex;
                 this.thresholds = thresholds;
@@ -235,8 +351,24 @@ public class DecisionStump extends Node implements IDecisionStump {
 
                 rightPredictions(thresholds);
                 computeEntropy();
-            
-                ok = false;
+            }
+            } else if(branchFunction.equals("mae")) { 
+                for (ArrayList<Double> br : branches) {
+                if(Double.isNaN(br.get(4)))
+                    continue;
+                maeReductionIteration -= br.get(0)/dataPartition.studentIndexes.size() * br.get(4); //branch variance weighted by percentage of students in branch
+            }
+            if(maeReductionIteration> this.maeReduction) {
+                
+                this.finalMAE = initialMAE - maeReductionIteration;
+                this.maeReduction = maeReductionIteration;
+                
+                this.courseIndex = courseIndex;
+                this.thresholds = thresholds;
+                this.branchProperties = branches;
+
+                rightPredictions(thresholds);
+                computeEntropy();
             }
 
             /*//print each split
@@ -249,6 +381,7 @@ public class DecisionStump extends Node implements IDecisionStump {
             System.out.println(this);
             */
         }
+        }
     }
 
     public ArrayList<ArrayList<Double>> computeBranchProperties(ArrayList<Double> thresholds, int courseIndex) {
@@ -256,59 +389,84 @@ public class DecisionStump extends Node implements IDecisionStump {
         ArrayList<ArrayList<Double>> branches = new ArrayList<ArrayList<Double>>();
         
         //Compute the properties of the first branch
-        int count = 0; double mean = 0, variance = 0;
+        int count = 0; double mean = 0, variance = 0, median = 0, mae = 0; //  mae is averaged sum of |yi - median(Y)|. So, when we are using MAE to evaluate our predictions, we should predict median 
+        ArrayList<Double> gradesForACourse = new ArrayList<>();
+        
         for(int j : dataPartition.studentIndexes) {
-            if(dataPartition.data.data[j][courseIndex] < thresholds.get(0)) {
+            if(dataPartition.data.data[j][courseIndex] >= 0 && dataPartition.data.data[j][courseIndex] < thresholds.get(0)) {
                 count++;
                 mean += dataPartition.data.data[j][targetIndex];
+                gradesForACourse.add(dataPartition.data.data[j][courseIndex]);
             }
         } mean /= count;
+        Collections.sort(gradesForACourse);
+        median = gradesForACourse.get(count/2);
+        
         for(int j : dataPartition.studentIndexes) {
             if(dataPartition.data.data[j][courseIndex] < thresholds.get(0)) {
                 variance += Math.pow(dataPartition.data.data[j][targetIndex] - mean, 2);
+                mae += Math.abs(dataPartition.data.data[j][targetIndex] - median);
             }
+
         } variance /= count - 1;
+        mae /= count;
         //add properties to branch arraylist
         ArrayList<Double> branch = new ArrayList<Double>();
-        branch.add((double)count); branch.add(mean); branch.add(variance);
+        branch.add((double)count); branch.add(mean); branch.add(variance); branch.add(median); branch.add(mae);
         branches.add(branch); 
 
         //Compute the properties of the middle branches
         for(int i = 1; i < thresholds.size(); i++){ //for each branch
-            count = 0; mean = 0; variance = 0;
+            count = 0; mean = 0; variance = 0; median = 0; mae = 0;
+            gradesForACourse = new ArrayList<>();
             for(int j : dataPartition.studentIndexes) {
                 if(dataPartition.data.data[j][courseIndex] >= thresholds.get(i-1) && dataPartition.data.data[j][courseIndex] < thresholds.get(i)) {
                     count++;
                     mean += dataPartition.data.data[j][targetIndex];
+                    gradesForACourse.add(dataPartition.data.data[j][courseIndex]);
+        
                 }
             } mean /= count;
+            Collections.sort(gradesForACourse);
+            median = gradesForACourse.get(count/2);
+            
             for(int j : dataPartition.studentIndexes) {
                 if(dataPartition.data.data[j][courseIndex] >= thresholds.get(i-1) && dataPartition.data.data[j][courseIndex] < thresholds.get(i)) {
                     variance += Math.pow(dataPartition.data.data[j][targetIndex] - mean, 2);
+                    mae += Math.abs(dataPartition.data.data[j][targetIndex] - median);
+
                 }
             } variance /= count - 1;
+            mae /=count;
             //add properties to branch arraylist
             branch = new ArrayList<Double>();
-            branch.add((double)count); branch.add(mean); branch.add(variance);
+            branch.add((double)count); branch.add(mean); branch.add(variance); branch.add(median); branch.add(mae);
             branches.add(branch); 
         }
 
         //compute the properties of the last branch
-        count = 0; mean = 0; variance = 0;
+        count = 0; mean = 0; variance = 0; median = 0; mae = 0;
+        gradesForACourse = new ArrayList<>();
         for(int j : dataPartition.studentIndexes) {
             if(dataPartition.data.data[j][courseIndex] >= thresholds.get(thresholds.size()-1)) {
                 count++;
                 mean += dataPartition.data.data[j][targetIndex];
+                gradesForACourse.add(dataPartition.data.data[j][courseIndex]);
+
             }
         } mean /= count;
+        Collections.sort(gradesForACourse);
+        median =  gradesForACourse.get(count/2);
         for(int j : dataPartition.studentIndexes) {
             if(dataPartition.data.data[j][courseIndex] >= thresholds.get(thresholds.size()-1)) {
                 variance += Math.pow(dataPartition.data.data[j][targetIndex] - mean, 2);
+                mae += Math.abs(dataPartition.data.data[j][targetIndex] - median);
             }
-        } variance /= count - 1; //count - 1 because we are estimating the variance of the population from the sample
+        } variance /= count - 1;  //count - 1 because we are estimating the variance of the population from the sample
         //add properties to branch arraylist
+        mae /=count;
         branch = new ArrayList<Double>();
-        branch.add((double)count); branch.add(mean); branch.add(variance);
+        branch.add((double)count); branch.add(mean); branch.add(variance); branch.add(median); branch.add(mae);
         branches.add(branch);
 
         return branches;
@@ -440,6 +598,15 @@ public class DecisionStump extends Node implements IDecisionStump {
         childrenDataPartitions.add(new DataPartition(dataPartition, (double[] row) -> {return row[courseIndex] >= thresholds.get(thresholds.size()-1);}));
     }
 
+    public void procreate(){
+        children = new ArrayList<Node>();
+        if(childrenDataPartitions == null)
+            computeChildrenDataPartitions();
+        for (DataPartition childDataPartition : childrenDataPartitions) {
+            children.add(new DecisionStump(childDataPartition, targetIndex));
+        }
+    }
+
     public ArrayList<DataPartition> getChildrenDataPartitions() {
         if (childrenDataPartitions == null)
             computeChildrenDataPartitions();
@@ -483,6 +650,18 @@ public class DecisionStump extends Node implements IDecisionStump {
         return rightPredictions;
     }
     public double getMAE(){
-        return MAE;
+        return finalMAE;
+    }
+
+    public int getCourseIndex(){
+        return courseIndex;
+    }
+
+    public ArrayList<Double> getThresholds(){
+        return thresholds;
+    }
+
+    public DataPartition getDataPartition(){
+        return dataPartition;
     }
 }
