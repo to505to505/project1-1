@@ -102,11 +102,12 @@ public class DecisionStump extends Node implements IDecisionStump {
 
         //Finds the best set of thresholds to split the given course in order to maximize the variance reduction on the target
         for(int i : dataPartition.courseIndexes)
-            if(i != targetIndex)
+            if(i != targetIndex) { 
                 if(true && i == 30 || i == 31 || i == 33)
                     categoricalSplit(i);
                 else
                     findBestNSplit(dataPartition, i, targetIndex, STUMP_WIDTH -1);
+            }
     }
 
     /**
